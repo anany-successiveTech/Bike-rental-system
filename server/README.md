@@ -1,4 +1,5 @@
 # Bike-rental-system
+
 # Bike Rental System - Project Overview
 
 ## Introduction
@@ -82,12 +83,6 @@ The Bike Rental System is a modern web-based application that facilitates bicycl
 - Secure payment processing
 - User data protection
 
-## Future Enhancements
-
-- Mobile application development
-- GPS tracking for bikes
-- Automated maintenance scheduling
-- Integration with other transportation services
-- Customer loyalty program
+## Conclusion
 
 This document serves as a foundation for the Bike Rental System project and will be updated as the project evolves.

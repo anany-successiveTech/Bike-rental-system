@@ -1,0 +1,53 @@
+# This is the project structure/directory doc
+
+bike-rental-backend/
+│── .env                        # Environment variables
+│── .gitignore
+│── package.json
+│── nodemon.json
+│── README.md
+
+│── src/
+│   ├── index.js                # App entry point (Express setup, root middlewares)
+│   ├── app.js                  # Express app config
+
+│   ├── config/                 # Configuration files
+│   │   ├── db.js               # MongoDB connection
+│   │   └── logger.js           # Winston/Morgan logger config
+
+│   ├── middleware/             # Global & route middlewares
+│   │   ├── authMiddleware.js   # verifyJWT, authorizeRole
+│   │   ├── errorMiddleware.js  # error handler
+│   │   ├── rateLimiter.js      # limiter setup
+│   │   ├── uploadMiddleware.js # multer for DL, bike photos
+│   │   └── index.js            # export all middlewares
+
+│   ├── utils/                  # Utility/helper functions
+│   │   ├── responseHandler.js  # success/error response format
+│   │   ├── token.js            # generateJWT, verifyJWT
+│   │   ├── password.js         # hashPassword, comparePassword
+│   │   └── index.js
+
+│   ├── models/                 # Mongoose models
+│   │   ├── User.js             # Tourist + Admin (role-based)
+│   │   ├── Bike.js             # Bike schema
+│   │   ├── Booking.js          # Booking schema
+│   │   └── Payment.js          # Payment schema
+
+│   ├── controllers/            # Route handlers
+│   │   ├── authController.js   # register, login, logout, reset password
+│   │   ├── userController.js   # profile, upload DL
+│   │   ├── bikeController.js   # bike CRUD, search/list
+│   │   ├── bookingController.js# create, cancel, manage bookings
+│   │   └── paymentController.js# initiate, verify, view payments
+
+│   ├── routes/                 # API routes
+│   │   ├── authRoutes.js       # /api/v1/auth/*
+│   │   ├── userRoutes.js       # /api/v1/user/*
+│   │   ├── bikeRoutes.js       # /api/v1/bikes/*
+│   │   ├── bookingRoutes.js    # /api/v1/bookings/*
+│   │   └── paymentRoutes.js    # /api/v1/payments/*
+│   │
+│   └── docs/                   # Optional API docs (Swagger, Postman collections)
+│       └── api-spec.yaml
+

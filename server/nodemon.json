@@ -1,5 +1,12 @@
 {
-  "watch": ["index.js", "src/**/*.js"],
+  "watch": ["index.js", "routes", "controllers", "models", "config"],
   "ext": "js,json",
-  "exec": "node index.js"
+  "ignore": ["node_modules/**", "uploads/**"],
+  "exec": "node ./index.js",
+  "env": {
+    "NODE_ENV": "development"
+  },
+  "delay": "250ms",
+  "restartable": "rs"
 }
+
