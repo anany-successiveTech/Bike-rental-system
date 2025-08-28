@@ -5,6 +5,8 @@ import cors from "cors";
 import authRouter from "./routes/authRouter.js";
 import userRouter from "./routes/userRouter.js";
 import bikeRouter from "./routes/bikeRouter.js";
+import bookingRouter from "./routes/bookingRouter.js";
+// import paymentRouter from "./routes/paymentRouter.js";
 
 dotenv.config();
 const app = express();
@@ -25,7 +27,7 @@ app.get('/', (req, res) => {
 app.use("/api/v1/auth", authRouter);
 app.use("/api/v1/users", userRouter);
 app.use("/api/v1/bikes", bikeRouter);
-// app.use("/api/v1/bookings", bookingRouter);
+app.use("/api/v1/bookings", bookingRouter);
 // app.use("/api/v1/payments", paymentRouter);
 
 // Connect DB first, then start server

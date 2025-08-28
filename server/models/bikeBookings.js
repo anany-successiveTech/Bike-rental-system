@@ -33,6 +33,8 @@ const bookingSchema = new Schema(
         ret.id = ret._id;
         delete ret._id;
         delete ret.__v;
+        ret.createdAt = new Date(ret.createdAt).toLocaleString();
+        ret.updatedAt = new Date(ret.updatedAt).toLocaleString();
       },
     },
   }

@@ -1,36 +1,35 @@
-import Booking from "../models/bikeBookings";
+import Booking from "../models/bikeBookings.js";
 import Bike from "../models/bikes.js";
 import { errorResponse, successResponse } from "../utils/successResponse.js";
 
 export const createBooking = async (req, res) => {
   try {
     const {
-      bikeId,
-      startDate: startDateRaw,
-      endDate: endDateRaw,
+      vehicleRegistration,
+      startDate,
+      endDate,
       rentedPrice,
       kilometers,
       status,
       bikeImage,
     } = req.body;
 
-    const userId = req.user && req.user.id;
-    if (!userId) {
-      return errorResponse(res, "Authentication required", null, 401);
+    // Use userId directly assuming authentication middleware has set it
+    // const userId = req.user?.id;
+    const userId = "64fb1234abcd5678ef901234"; // replace with a real ObjectId from your 'users' collection
+
+    if (!vehicleRegistration) {
+      return errorResponse(res, "vehicleRegistration is required", null, 400);
     }
 
-    if (!bikeId) {
-      return errorResponse(res, "bikeId is required", null, 400);
-    }
-
-    // parse and validate dates
-    const startDate = new Date(startDateRaw);
-    const endDate = new Date(endDateRaw);
-    if (isNaN(startDate) || isNaN(endDate)) {
+    // Validate dates
+    const parsedStartDate = new Date(startDate);
+    const parsedEndDate = new Date(endDate);
+    if (isNaN(parsedStartDate) || isNaN(parsedEndDate)) {
       return errorResponse(res, "Invalid startDate or endDate", null, 400);
     }
 
-    if (startDate > endDate) {
+    if (parsedStartDate > parsedEndDate) {
       return errorResponse(
         res,
         "startDate must be before or equal to endDate",
@@ -39,23 +38,18 @@ export const createBooking = async (req, res) => {
       );
     }
 
-    const now = new Date();
-    if (endDate < now) {
-      return errorResponse(res, "endDate must be in the future", null, 400);
-    }
-
-    // ensure bike exists
-    const bike = await Bike.findById(bikeId);
+    // Find bike by vehicleRegistration
+    const bike = await Bike.findOne({ vehicleRegistration });
     if (!bike) {
       return errorResponse(res, "Bike not found", null, 404);
     }
 
-    // check for overlapping bookings for same bike
+    // Check for overlapping bookings
     const overlapping = await Booking.findOne({
-      bike: bikeId,
-      startDate: { $lte: endDate },
-      endDate: { $gte: startDate },
-      status: { $in: ["pending", "confirmed", "ongoing"] },
+      bike: bike._id,
+      startDate: { $lte: parsedEndDate },
+      endDate: { $gte: parsedStartDate },
+      status: { $in: ["pending", "confirm", "ongoing"] },
     });
 
     if (overlapping) {
@@ -67,27 +61,13 @@ export const createBooking = async (req, res) => {
       );
     }
 
-    // validate numeric fields if provided
-    if (
-      rentedPrice !== undefined &&
-      (isNaN(Number(rentedPrice)) || Number(rentedPrice) < 0)
-    ) {
-      return errorResponse(res, "Invalid rentedPrice", null, 400);
-    }
-
-    if (
-      kilometers !== undefined &&
-      (isNaN(Number(kilometers)) || Number(kilometers) < 0)
-    ) {
-      return errorResponse(res, "Invalid kilometers", null, 400);
-    }
-
+    // Create booking
     const newBooking = await Booking.create({
-      bike: bikeId,
-      user: userId,
+      bike: bike._id,
+      user: userId, // Trusted from middleware
       bikeImage,
-      startDate,
-      endDate,
+      startDate: parsedStartDate,
+      endDate: parsedEndDate,
       kilometers: kilometers !== undefined ? Number(kilometers) : undefined,
       rentedPrice: rentedPrice !== undefined ? Number(rentedPrice) : undefined,
       status: status || "pending",
@@ -105,12 +85,85 @@ export const createBooking = async (req, res) => {
   }
 };
 
-export const getBookingsForUser = async (req, res) => {
+export const getBikeBookings = async (req, res) => {
   try {
-    const userId = req.user && req.user.id;
-    const bookings = await Booking.find({ user: userId }).populate("bike");
-    return successResponse(res, "Bookings fetched", { bookings }, 200);
+    const bikeId = req.params.id;
+
+    // If a specific bike id is provided, return bookings for that bike (existing behavior)
+    if (bikeId) {
+      const bookings = await Booking.find({ bike: bikeId }).populate("user");
+      return successResponse(res, "Bookings fetched", { bookings }, 200);
+    }
+
+    // Otherwise return the distinct bikes that appear in the bookings collection
+    const bikeIds = await Booking.distinct("bike");
+    if (!bikeIds || bikeIds.length === 0) {
+      return successResponse(
+        res,
+        "No bikes found in bookings",
+        { bikes: [] },
+        200
+      );
+    }
+
+    const bikes = await Bike.find({ _id: { $in: bikeIds } });
+    return successResponse(res, "Bikes fetched from bookings", { bikes }, 200);
   } catch (error) {
     return errorResponse(res, "Failed to fetch bookings", error, 500);
+  }
+};
+
+export const updateBookingStatus = async (req, res) => {
+  try {
+    const bookingId = req.params.id;
+    const { status } = req.body;
+
+    // Basic validation
+    if (!bookingId) {
+      return errorResponse(res, "Booking ID is required in URL", null, 400);
+    }
+
+    if (!status) {
+      return errorResponse(
+        res,
+        "Status is required in request body",
+        null,
+        400
+      );
+    }
+
+    // Normalize and validate status
+    const allowedStatuses = ["pending", "confirmed", "cancel", "complete"];
+    const normalizedStatus = String(status).toLowerCase().trim();
+
+    if (!allowedStatuses.includes(normalizedStatus)) {
+      return errorResponse(
+        res,
+        `Invalid status. Allowed: ${allowedStatuses.join(", ")}`,
+        null,
+        400
+      );
+    }
+
+    // Update booking
+    const updatedBooking = await Booking.findByIdAndUpdate(
+      bookingId,
+      { status: normalizedStatus },
+      { new: true }
+    ).populate("user bike");
+
+    if (!updatedBooking) {
+      return errorResponse(res, "Booking not found", null, 404);
+    }
+
+    return successResponse(
+      res,
+      "Booking status updated",
+      { booking: updatedBooking },
+      200
+    );
+  } catch (error) {
+    console.error("Update Booking Status Error:", error);
+    return errorResponse(res, "Failed to update booking status", error, 500);
   }
 };

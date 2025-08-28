@@ -1,8 +1,9 @@
 {
-  "watch": ["index.js", "routes", "controllers", "models", "config"],
+  "watch": ["index.js", "routes", "controllers", "models", "config", "utils"],
   "ext": "js,json",
-  "ignore": ["node_modules/**", "uploads/**"],
-  "exec": "node ./index.js",
+  "ignore": ["uploads/*", "node_modules/*", ".git/*"],
+  "delay": "1000",
+  "exec": "node --enable-source-maps ./index.js",
   "env": {
     "NODE_ENV": "development"
   }
