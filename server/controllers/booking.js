@@ -1,44 +1,106 @@
-import Booking from "../models/history.js";
+import Booking from "../models/bikeBookings";
 import Bike from "../models/bikes.js";
 import { errorResponse, successResponse } from "../utils/successResponse.js";
-import mongoose from "mongoose";
 
-// Create a booking
 export const createBooking = async (req, res) => {
   try {
-    const { bikeId, fromDate, toDate } = req.body;
+    const {
+      bikeId,
+      startDate: startDateRaw,
+      endDate: endDateRaw,
+      rentedPrice,
+      kilometers,
+      status,
+      bikeImage,
+    } = req.body;
+
     const userId = req.user && req.user.id;
-
-    if (!bikeId || !fromDate || !toDate) {
-      return errorResponse(res, "bikeId, fromDate and toDate are required", null, 400);
+    if (!userId) {
+      return errorResponse(res, "Authentication required", null, 401);
     }
 
-    if (!mongoose.Types.ObjectId.isValid(bikeId)) {
-      return errorResponse(res, "Invalid bikeId", null, 400);
+    if (!bikeId) {
+      return errorResponse(res, "bikeId is required", null, 400);
     }
 
+    // parse and validate dates
+    const startDate = new Date(startDateRaw);
+    const endDate = new Date(endDateRaw);
+    if (isNaN(startDate) || isNaN(endDate)) {
+      return errorResponse(res, "Invalid startDate or endDate", null, 400);
+    }
+
+    if (startDate > endDate) {
+      return errorResponse(
+        res,
+        "startDate must be before or equal to endDate",
+        null,
+        400
+      );
+    }
+
+    const now = new Date();
+    if (endDate < now) {
+      return errorResponse(res, "endDate must be in the future", null, 400);
+    }
+
+    // ensure bike exists
     const bike = await Bike.findById(bikeId);
-    if (!bike) return errorResponse(res, "Bike not found", null, 404);
+    if (!bike) {
+      return errorResponse(res, "Bike not found", null, 404);
+    }
 
-    // Check availability (very basic: ensure no overlapping booking)
+    // check for overlapping bookings for same bike
     const overlapping = await Booking.findOne({
       bike: bikeId,
-      $or: [
-        { from: { $lte: new Date(toDate) }, to: { $gte: new Date(fromDate) } },
-      ],
+      startDate: { $lte: endDate },
+      endDate: { $gte: startDate },
+      status: { $in: ["pending", "confirmed", "ongoing"] },
     });
-    if (overlapping) return errorResponse(res, "Bike already booked for given dates", null, 409);
 
-    const booking = await Booking.create({
+    if (overlapping) {
+      return errorResponse(
+        res,
+        "Bike is already booked for the selected dates",
+        null,
+        409
+      );
+    }
+
+    // validate numeric fields if provided
+    if (
+      rentedPrice !== undefined &&
+      (isNaN(Number(rentedPrice)) || Number(rentedPrice) < 0)
+    ) {
+      return errorResponse(res, "Invalid rentedPrice", null, 400);
+    }
+
+    if (
+      kilometers !== undefined &&
+      (isNaN(Number(kilometers)) || Number(kilometers) < 0)
+    ) {
+      return errorResponse(res, "Invalid kilometers", null, 400);
+    }
+
+    const newBooking = await Booking.create({
       bike: bikeId,
       user: userId,
-      from: new Date(fromDate),
-      to: new Date(toDate),
-      status: "booked",
+      bikeImage,
+      startDate,
+      endDate,
+      kilometers: kilometers !== undefined ? Number(kilometers) : undefined,
+      rentedPrice: rentedPrice !== undefined ? Number(rentedPrice) : undefined,
+      status: status || "pending",
     });
 
-    return successResponse(res, "Booking created", { booking }, 201);
+    return successResponse(
+      res,
+      "Booking created successfully",
+      { newBooking },
+      201
+    );
   } catch (error) {
+    console.error("Create Booking Error:", error);
     return errorResponse(res, "Failed to create booking", error, 500);
   }
 };

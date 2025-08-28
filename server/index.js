@@ -3,7 +3,7 @@ import dotenv from "dotenv";
 import connectDB from "./config/db.js";
 import cors from "cors";
 import authRouter from "./routes/authRouter.js";
-// import userRouter from "./routes/userRouter.js";
+import userRouter from "./routes/userRouter.js";
 import bikeRouter from "./routes/bikeRouter.js";
 
 dotenv.config();
@@ -23,7 +23,7 @@ app.get('/', (req, res) => {
 
 // Routes
 app.use("/api/v1/auth", authRouter);
-// app.use("/api/v1/users", userRouter);
+app.use("/api/v1/users", userRouter);
 app.use("/api/v1/bikes", bikeRouter);
 // app.use("/api/v1/bookings", bookingRouter);
 // app.use("/api/v1/payments", paymentRouter);

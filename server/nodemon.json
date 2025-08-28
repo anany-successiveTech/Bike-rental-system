@@ -5,8 +5,5 @@
   "exec": "node ./index.js",
   "env": {
     "NODE_ENV": "development"
-  },
-  "delay": "250ms",
-  "restartable": "rs"
+  }
 }
-
