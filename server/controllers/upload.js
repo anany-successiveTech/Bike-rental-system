@@ -6,6 +6,9 @@ import { errorResponse, successResponse } from "../utils/successResponse.js";
 const uploadDir = path.join(process.cwd(), "uploads", "bikes");
 if (!fs.existsSync(uploadDir)) fs.mkdirSync(uploadDir, { recursive: true });
 
+// Multer setup
+// Configuring storage, file naming, limits, and file filtering
+
 const storage = multer.diskStorage({
   destination: (req, file, cb) => cb(null, uploadDir),
   filename: (req, file, cb) => {

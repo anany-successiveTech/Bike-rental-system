@@ -1,6 +1,12 @@
 import User from "../models/users.js";
 import { errorResponse, successResponse } from "../utils/successResponse.js";
 
+// These functions assume that authentication middleware has set req.user with the authenticated user's info.
+
+// Get user profile
+
+// Update user profile
+
 export const getUserProfile = async (req, res) => {
   try {
     const email = req.user.email;

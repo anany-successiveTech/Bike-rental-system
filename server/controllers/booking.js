@@ -2,6 +2,11 @@ import Booking from "../models/bikeBookings.js";
 import Bike from "../models/bikes.js";
 import { errorResponse, successResponse } from "../utils/successResponse.js";
 
+// These functions assume that authentication middleware has set req.user with the authenticated user's info.
+
+// Create a new booking
+
+
 export const createBooking = async (req, res) => {
   try {
     const {

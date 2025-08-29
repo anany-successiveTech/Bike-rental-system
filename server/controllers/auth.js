@@ -12,6 +12,11 @@ dotenv.config();
 
 const JWT_SECRET = process.env.JWT_SECRET;
 
+// Register User
+// Login User
+// Password Reset
+// Logout User
+
 export const registerUser = async (req, res) => {
   try {
     const {

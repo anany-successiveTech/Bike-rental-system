@@ -1,29 +1,33 @@
 // Simple User model
 import mongoose from "mongoose";
 
-const documentSchema= new mongoose.Schema({
+const documentSchema = new mongoose.Schema({
   panNo: {
-      type: String,
-      trim: true,
-      unique: true,
-    },
-    aadhar: {
-      type: String,
-      trim: true,
-      unique: true,
-      length: 12,
-    },
-    GST: {
-      type: String,
-      trim: true,
-      unique: true,
-    },
-    registrationNo: {
-      type: String,
-      trim: true,
-      unique: true,
-    },
-})
+    type: String,
+    trim: true,
+    // unique: true,
+    // sparse: true,
+  },
+  aadhar: {
+    type: String,
+    trim: true,
+    // unique: true,
+    // sparse: true,
+    length: 12,
+  },
+  GST: {
+    type: String,
+    trim: true,
+    // sparse: true,
+    // unique: true,
+  },
+  registrationNo: {
+    type: String,
+    trim: true,
+    // unique: true,
+    // sparse: true,
+  },
+});
 
 const userSchema = new mongoose.Schema({
   firstName: { type: String, required: true, trim: true, maxlength: 30 },
@@ -61,8 +65,12 @@ const userSchema = new mongoose.Schema({
   },
   businessName: { type: String, trim: true, maxlength: 100 },
   document: {
-    type:documentSchema,
+    type: documentSchema,
+    required: function () {
+      return this.role === "provider";
+    },
   },
+
   role: { type: String, enum: ["customer", "provider"], default: "customer" },
 
   ownedBikes: [{ type: mongoose.Schema.Types.ObjectId, ref: "Bike" }],
