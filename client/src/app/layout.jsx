@@ -4,6 +4,8 @@ import "./globals.css";
 import { ThemeProvider } from "next-themes";
 import Navbar from "@/components/layout/navBar";
 import Footer from "@/components/layout/footer";
+import { Toaster } from "@/components/ui/sonner";
+import { FavoritesProvider } from "@/context/favoriteCount";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -35,10 +37,13 @@ export default function RootLayout({ children }) {
           enableSystem
           disableTransitionOnChange
         >
-          <Navbar />
-          {/* <main className="mt-16"> {children}</main> */}
-          <main className="main-content home-body mt-20">{children}</main>
-          <Footer />
+          <FavoritesProvider>
+            <Navbar />
+            {/* <main className="mt-16"> {children}</main> */}
+            <main className="main-content home-body mt-18">{children}</main>
+            <Toaster />
+            <Footer />
+          </FavoritesProvider>
         </ThemeProvider>
       </body>
     </html>

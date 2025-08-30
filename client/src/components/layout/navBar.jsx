@@ -1,128 +1,218 @@
 "use client";
 
 import { useState } from "react";
-import { Menu, X, MapPin } from "lucide-react";
+import { Menu, X } from "lucide-react";
+import { Bike } from "lucide-react";
+import { Heart } from "lucide-react";
 import Link from "next/link";
 import { Button } from "../ui/button";
+import LoginModal from "@/components/general/loginModal";
+import { ModeToggle } from "../global/themeButton";
+import { useContext } from "react";
+import { FavoritesContext } from "@/context/favoriteCount";
+import { useRouter } from "next/navigation";
 
 const Navbar = () => {
   const [isOpen, setIsOpen] = useState(false);
+  const [loginOpen, setLoginOpen] = useState(false);
+  const { favoriteCount } = useContext(FavoritesContext);
+  const router = useRouter();
 
   return (
-    <nav className="bg-white dark:bg-gray-900 shadow-md fixed top-0 left-0 right-0 z-50 transition-colors">
-      <div className="max-w-7xl mx-auto px-6 py-3 flex items-center justify-between">
-        {/* Logo */}
-        <div className="text-2xl flex align-center font-bold text-blue-600 dark:text-blue-400">
-          <div className="mt-4">
-            <Link
-              href="/"
-              className="bg-gradient-to-r from-[#feda75] via-[#d62976] via-[#962fbf] via-[#4f5bd5] to-[#4f5bd5] text-transparent bg-clip-text font-bold"
-            >
-              Bikers
-            </Link>
+    <nav className="bg-white dark:bg-black shadow-lg fixed top-0 left-0 right-0 z-50 transition-all duration-300 border-b border-gray-200 dark:border-gray-800">
+      <div className="max-w-7xl mx-auto px-6 py-4">
+        <div className="flex items-center justify-between">
+          <div className="flex items-center space-x-8">
+            <div className="flex items-center space-x-3">
+              <div className="w-10 h-10 flex-shrink-0">
+                <img
+                  src="/logo-light.png"
+                  alt="Bikers Logo"
+                  className="block dark:hidden w-full h-full object-contain"
+                />
+
+                <img
+                  src="/logo-dark.png"
+                  alt="Bikers Logo"
+                  className="hidden dark:block w-full h-full object-contain"
+                />
+              </div>
+
+              <Link href="/" className="text-2xl font-bold">
+                <span className="bg-gradient-to-r from-blue-600 via-purple-600 to-blue-800 dark:from-blue-400 dark:via-purple-400 dark:to-blue-600 text-transparent bg-clip-text">
+                  Bikers
+                </span>
+              </Link>
+            </div>
+
+            <div className="hidden ml-20 lg:flex items-center space-x-6 gap-2">
+              <Link
+                href="/"
+                className="text-gray-700 dark:text-gray-300 hover:text-blue-600 dark:hover:text-blue-400 font-medium transition-colors duration-200"
+              >
+                Home
+              </Link>
+              <Link
+                href="/blogs"
+                className="text-gray-700 dark:text-gray-300 hover:text-blue-600 dark:hover:text-blue-400 font-medium transition-colors duration-200"
+              >
+                Blogs
+              </Link>
+              <Link
+                href="/support"
+                className="text-gray-700 dark:text-gray-300 hover:text-blue-600 dark:hover:text-blue-400 font-medium transition-colors duration-200"
+              >
+                Support
+              </Link>
+              <Link
+                href="/contact"
+                className="text-gray-700 dark:text-gray-300 hover:text-blue-600 dark:hover:text-blue-400 font-medium transition-colors duration-200"
+              >
+                Contact
+              </Link>
+              <Link
+                href="/partner"
+                className="text-gray-700 dark:text-gray-300 hover:text-blue-600 dark:hover:text-blue-400 font-medium transition-colors duration-200"
+              >
+                Partner
+              </Link>
+              <Link
+                href="/explore"
+                className="text-gray-700 dark:text-gray-300 hover:text-blue-600 dark:hover:text-blue-400 font-medium transition-colors duration-200"
+              >
+                Explore
+              </Link>
+            </div>
           </div>
 
-          <div className="w-14 h-14 mx-3">
-            {/* Logo for light mode */}
-            <img
-              src="/logo-light.png"
-              alt="Product Logo"
-              className="block dark:hidden"
-            />
+          <div className="flex items-center space-x-4">
+            <div>
+              <div className="hidden md:block">
+                <ModeToggle />
+              </div>
+            </div>
+            <div className="flex items-center mx-2 gap-1">
+              <Button
+                variant="googleBlue"
+                onClick={() => {
+                  router.push("/favorites");
+                }}
+              >
+                <Bike />
+                <p>{favoriteCount}</p>
+              </Button>
+            </div>
 
-            {/* Logo for dark mode */}
-            <img
-              src="/logo-dark.png"
-              alt="Product Logo"
-              className="hidden dark:block"
-            />
-          </div>
-        </div>
+            <div className="hidden md:flex items-center space-x-3">
+              <Button
+                variant="google"
+                onClick={() => setLoginOpen(true)}
+                className="font-medium border"
+              >
+                Login
+              </Button>
+              <Button variant="google" asChild className="font-medium border">
+                <Link href="/signup">Sign Up</Link>
+              </Button>
+            </div>
 
-        {/* Desktop Links */}
-        <div className="hidden md:flex items-center space-x-6 text-gray-800 dark:text-gray-200">
-          <Link
-            href="/"
-            className="hover:text-blue-600 dark:hover:text-blue-400"
-          >
-            Home
-          </Link>
-          <Link
-            href="/blogs"
-            className="hover:text-blue-600 dark:hover:text-blue-400"
-          >
-            Blogs
-          </Link>
-          <Link
-            href="/support"
-            className="hover:text-blue-600 dark:hover:text-blue-400"
-          >
-            Support
-          </Link>
-          <Link
-            href="/contact"
-            className="hover:text-blue-600 dark:hover:text-blue-400"
-          >
-            Contact
-          </Link>
-          <Link
-            href="/partner"
-            className="hover:text-blue-600 dark:hover:text-blue-400"
-          >
-            Become a Partner
-          </Link>
-          <Link
-            href="/explore"
-            className="hover:text-blue-600 dark:hover:text-blue-400"
-          >
-            Explore
-          </Link>
-          <div className="relative group"></div>{" "}
-          {/* Location Dropdown Placeholder */}
-          <div className="flex items-center gap-3">
-            <Link
-              href="/login"
-              className="px-4 py-2 rounded-lg border border-gray-300 dark:border-gray-600 hover:bg-gray-100 dark:hover:bg-gray-700"
-            >
-              Login
-            </Link>
-            <Link
-              href="/signup"
-              className="px-4 py-2 rounded-lg bg-blue-600 text-white hover:bg-blue-700 dark:bg-blue-500 dark:hover:bg-blue-600"
-            >
-              Sign Up
-            </Link>
-          </div>
-        </div>
-
-        {/* Mobile Menu Button */}
-        <div className="md:hidden text-gray-800 dark:text-gray-200">
-          <button onClick={() => setIsOpen(!isOpen)}>
-            {isOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
-          </button>
-        </div>
-      </div>
-
-      {/* Mobile Menu */}
-      {isOpen && (
-        <div>
-          <div className="">
-            <Link href="/">Home</Link>
-            <Link href="/blogs">Blogs</Link>
-            <Link href="/support">Support</Link>
-            <Link href="/contact">Contact</Link>
-            <Link href="/partner">Become a Partner</Link>
-            <Link href="/explore">Explore</Link>
-          </div>
-
-          <div className="md:hidden bg-white dark:bg-gray-900 shadow-md px-6 py-4 space-y-4 text-gray-800 dark:text-gray-200">
-            <div className="flex gap-3">
-              <Button>login</Button>
-              <Button>signup</Button>
+            {/* Mobile Menu Button */}
+            <div className="md:hidden">
+              <button
+                onClick={() => setIsOpen(!isOpen)}
+                className="p-2 rounded-lg text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors duration-200"
+              >
+                {isOpen ? (
+                  <X className="w-6 h-6" />
+                ) : (
+                  <Menu className="w-6 h-6" />
+                )}
+              </button>
             </div>
           </div>
         </div>
-      )}
+
+        {/* Mobile Menu */}
+        {isOpen && (
+          <div className="md:hidden mt-4 pb-4 border-t border-gray-200 dark:border-gray-800">
+            {/* Mobile Navigation Links */}
+            <div className="flex flex-col space-y-3 pt-4 mb-4">
+              <Link
+                href="/"
+                className="text-gray-700 dark:text-gray-300 hover:text-blue-600 dark:hover:text-blue-400 font-medium py-2 transition-colors duration-200"
+                onClick={() => setIsOpen(false)}
+              >
+                Home
+              </Link>
+              <Link
+                href="/blogs"
+                className="text-gray-700 dark:text-gray-300 hover:text-blue-600 dark:hover:text-blue-400 font-medium py-2 transition-colors duration-200"
+                onClick={() => setIsOpen(false)}
+              >
+                Blogs
+              </Link>
+              <Link
+                href="/support"
+                className="text-gray-700 dark:text-gray-300 hover:text-blue-600 dark:hover:text-blue-400 font-medium py-2 transition-colors duration-200"
+                onClick={() => setIsOpen(false)}
+              >
+                Support
+              </Link>
+              <Link
+                href="/contact"
+                className="text-gray-700 dark:text-gray-300 hover:text-blue-600 dark:hover:text-blue-400 font-medium py-2 transition-colors duration-200"
+                onClick={() => setIsOpen(false)}
+              >
+                Contact
+              </Link>
+              <Link
+                href="/partner"
+                className="text-gray-700 dark:text-gray-300 hover:text-blue-600 dark:hover:text-blue-400 font-medium py-2 transition-colors duration-200"
+                onClick={() => setIsOpen(false)}
+              >
+                Become a Partner
+              </Link>
+              <Link
+                href="/explore"
+                className="text-gray-700 dark:text-gray-300 hover:text-blue-600 dark:hover:text-blue-400 font-medium py-2 transition-colors duration-200"
+                onClick={() => setIsOpen(false)}
+              >
+                Explore
+              </Link>
+            </div>
+
+            {/* Mobile Theme Toggle */}
+            <div className="flex items-center justify-between mb-4 pt-3 border-t border-gray-200 dark:border-gray-800">
+              <span className="text-sm font-medium text-gray-700 dark:text-gray-300">
+                Theme
+              </span>
+              <ModeToggle />
+            </div>
+
+            {/* Mobile Auth Buttons */}
+            <div className="flex flex-col space-y-3">
+              <Button
+                variant="googleBlue"
+                onClick={() => {
+                  setLoginOpen(true);
+                  setIsOpen(false);
+                }}
+              >
+                Login
+              </Button>
+              <Button variant="google-blue" asChild>
+                <Link href="/signup" onClick={() => setIsOpen(false)}>
+                  Sign Up
+                </Link>
+              </Button>
+              <Heart />
+            </div>
+          </div>
+        )}
+      </div>
+
+      {/* Login Modal */}
+      <LoginModal open={loginOpen} onOpenChange={setLoginOpen} />
     </nav>
   );
 };

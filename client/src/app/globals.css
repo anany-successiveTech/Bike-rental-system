@@ -122,20 +122,21 @@
 }
 /* globals.css */
 .main-content {
-  padding-top: 0px;
-
+  padding: 0px;
 
 }
 
 /* Hide scrollbar completely (no scroll allowed) */
-html, body {
-  overflow: hidden;  /* removes vertical + horizontal scrollbars */
+html,
+body {
+  overflow: hidden; /* removes vertical + horizontal scrollbars */
 }
 
 /* OR: Hide scrollbar but keep scrolling */
-html, body {
+html,
+body {
   overflow-y: scroll; /* keeps scroll working */
-  scrollbar-width: none;  /* Firefox */
+  scrollbar-width: none; /* Firefox */
 }
 
 html::-webkit-scrollbar,

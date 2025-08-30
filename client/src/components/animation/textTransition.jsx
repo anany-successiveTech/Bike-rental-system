@@ -19,7 +19,7 @@ const TextAnimation = () => {
   return (
     <div>
       <h1>
-        <TextTransition springConfig={presets.wobbly}>
+        <TextTransition springConfig={presets.gentle}>
           {TEXTS[index % TEXTS.length]}
         </TextTransition>
       </h1>
