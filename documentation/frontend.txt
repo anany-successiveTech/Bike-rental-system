@@ -1,0 +1,41 @@
+client/
+├── public/                 # Static files served as root (e.g., /logo.png)
+│   ├── File.svg
+│   ├── globe.svg
+│   ├── logo-dark.png
+│   ├── logo-light.png
+│   ├── next.svg
+│   ├── vercel.svg
+│   └── window.svg
+│
+├── src/
+│   ├── app/                # Next.js App Router entry point
+│   │   ├── globals.css     # Global CSS (Tailwind & custom styles)
+│   │   ├── layout.jsx      # Root layout wrapper (Theme, fonts, metadata)
+│   │   └── page.jsx        # Home page (default route `/`)
+│   │
+│   ├── components/         # Reusable components
+│   │   ├── animation/      # Animation-related components
+│   │   │   └── textTransition.jsx
+│   │   ├── myComponents/   # App-specific custom components
+│   │   │   ├── global/
+│   │   │   │   └── themeButton.jsx  # Theme switcher (light/dark/system)
+│   │   │   ├── layout/
+│   │   │   │   └── navBar.jsx       # Navigation bar
+│   │   └── ui/             # shadcn/ui or shared UI elements
+│   │
+│   ├── context/
+│   │   └── themeProvider.jsx   # Context provider for theme management
+│   │
+│   ├── lib/                # Utility functions / helpers
+│   │   └── utils.js
+│   │
+│   └── utils/              # (Reserved for future utilities/helpers)
+│
+├── components.json         # shadcn/ui config
+├── next.config.mjs         # Next.js configuration
+├── postcss.config.mjs      # PostCSS (for TailwindCSS)
+├── tailwind.config.js      # TailwindCSS config
+├── package.json            # Dependencies & scripts
+├── README.md               # Project documentation
+└── ...

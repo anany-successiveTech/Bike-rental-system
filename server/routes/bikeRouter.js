@@ -9,7 +9,11 @@ import {
 } from "../controllers/bike.js";
 import { uploadImage } from "../controllers/upload.js";
 import validate from "../middleware/schemaValidation.js";
-import { addBikeSchema, ratingSchema, updateBikeSchema } from "../validations/bikeValidation.js";
+import {
+  addBikeSchema,
+  ratingSchema,
+  updateBikeSchema,
+} from "../validations.js/bikeValidation.js";
 import authentication from "../middleware/authentication.js";
 
 // These are the bike related routes.
@@ -21,10 +25,20 @@ bikeRouter.post("/upload-image", authentication, uploadImage); // ONLY FOR ADMIN
 
 bikeRouter.get("/all-bikes", getAllBikes);
 
-bikeRouter.put("/update-bike/:id", validate(updateBikeSchema), authentication, updateBikeDetails); // ONLY FOR ADMIN
+bikeRouter.put(
+  "/update-bike/:id",
+  validate(updateBikeSchema),
+  authentication,
+  updateBikeDetails
+); // ONLY FOR ADMIN
 
 bikeRouter.delete("/delete-bike/:id", authentication, deleteBike); // ONLY FOR ADMIN
 
-bikeRouter.put("/rate-bike", validate(ratingSchema), authentication, bikeRating); // ONLY FOR CUSTOMERS
+bikeRouter.put(
+  "/rate-bike",
+  validate(ratingSchema),
+  authentication,
+  bikeRating
+); // ONLY FOR CUSTOMERS
 
 export default bikeRouter;
