@@ -7,7 +7,7 @@ const Home = () => {
   return (
     <div>
       <main className="min-h-screen flex items-center justify-center bg-white dark:bg-black py-16">
-        <div className="container max-w-7xl px-6">
+        <div className="container max-w-8xl px-6">
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-10 items-center">
             {/* Left: Hero text */}
             <div className="space-y-6">

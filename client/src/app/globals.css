@@ -123,7 +123,9 @@
 /* globals.css */
 .main-content {
   padding: 0px;
-
+  width: 100%;
+  margin: 4.6rem auto;
+  /* height: 80vh; */
 }
 
 /* Hide scrollbar completely (no scroll allowed) */

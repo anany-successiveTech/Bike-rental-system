@@ -13,11 +13,12 @@ export const addBike = async (req, res) => {
       rentPrice,
       location,
       companyName,
+      bikeImage,
       vehicleRegistration,
     } = req.body;
     const owner = req.user && req.user.id;
 
-    // if (!image) return errorResponse(res, "Image is required", null, 400);
+    if (!image) return errorResponse(res, "Image is required", null, 400);
 
     const bike = await Bike.create({
       name,
@@ -28,7 +29,7 @@ export const addBike = async (req, res) => {
       location,
       companyName,
       vehicleRegistration,
-      // image,
+      bikeImage,
       owner,
     });
 

@@ -34,6 +34,8 @@ export const FavoritesProvider = ({ children }) => {
   const addFavorite = (bike) => {
     if (!favoriteBikes.find((b) => b.id === bike.id)) {
       setFavoriteBikes([...favoriteBikes, bike]);
+      console.log(favoriteBikes, "This is favoriteBikes");
+      
     }
   };
 

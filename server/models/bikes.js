@@ -15,7 +15,7 @@ const bikeSchema = new mongoose.Schema(
     rentPrice: { type: Number, required: true, min: 0 },
     location: { type: String, required: true, trim: true },
     companyName: { type: String, required: true, trim: true },
-    // bikeImage: { type: String, trim: true },
+    bikeImage: { type: String, trim: true },
     vehicleRegistration: {
       type: String,
       uppercase: true,
