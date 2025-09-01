@@ -12,31 +12,13 @@ import {
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Bike, CalendarCheck, Smile } from "lucide-react";
-import CityCard from "@/components/general/locationCard";
+import cities from "@/sampleData/citiesList";
 
 const test = [
-  { name: "Alice", imageSrc: "/activa.png" },
-  { name: "Bob", imageSrc: "/activa-pro.png" },
-  { name: "David", imageSrc: "/himalyan.png" },
-  { name: "Eve", imageSrc: "/activa.png" },
-];
-
-const cities = [
-  { name: "Delhi", image: "/images/delhi.jpg" },
-  { name: "Mumbai", image: "/images/mumbai.jpg" },
-  { name: "Bengaluru", image: "/images/bengaluru.jpg" },
-  { name: "Hyderabad", image: "/images/hyderabad.jpg" },
-  { name: "Pune", image: "/images/pune.jpg" },
-  { name: "Ahmedabad", image: "/images/ahmedabad.jpg" },
-  { name: "Jaipur", image: "/images/jaipur.jpg" },
-  { name: "Indore", image: "/images/indore.jpg" },
-  { name: "Bhopal", image: "/images/bhopal.jpg" },
-  { name: "Nagpur", image: "/images/nagpur.jpg" },
-  { name: "Coimbatore", image: "/images/coimbatore.jpg" },
-  { name: "Visakhapatnam", image: "/images/visakhapatnam.jpg" },
-  { name: "Surat", image: "/images/surat.jpg" },
-  { name: "Kanpur", image: "/images/kanpur.jpg" },
-  { name: "Varanasi", image: "/images/varanasi.jpg" },
+  { name: "Activa i", imageSrc: "/activa.png" },
+  { name: "Bullet 350", imageSrc: "/bullet.png" },
+  { name: "Activa", imageSrc: "/activa-pro.png" },
+  { name: "Z 900", imageSrc: "/z900.png" },
 ];
 
 const Home = () => {
@@ -56,7 +38,7 @@ const Home = () => {
             </div>
 
             <p className="text-base md:text-sm text-gray-600 dark:text-gray-400">
-              Trusted by riders across the city — easy booking, secure payments,
+              Trusted by riders across the city - easy booking, secure payments,
               and 24/7 support.
             </p>
           </div>
@@ -65,7 +47,7 @@ const Home = () => {
           <div className="flex items-center justify-center">
             <div className="w-full max-w-3xl">
               <img
-                src="/l-bike.jpg"
+                src="https://media.tacdn.com/media/attractions-splice-spp-674x446/15/c7/d4/9b.jpg"
                 alt="Riding bike"
                 className="w-full aspect-[16/9] rounded-xl shadow-xl object-cover border border-gray-200 dark:border-gray-800"
               />
@@ -88,14 +70,22 @@ const Home = () => {
                 <CarouselItem key={index} className="md:basis-1/2 lg:basis-1/3">
                   <div className="p-2">
                     <Card className="h-full flex flex-col">
-                      <CardContent className="flex flex-col items-center p-1 flex-grow">
+                      <CardContent className="flex flex-col items-center p-4 flex-grow">
+                        {/* Bike Image */}
                         <img
                           src={item.imageSrc}
                           alt={item.name}
                           className="w-60 h-44 object-contain mb-4"
                         />
+
+                        {/* Bike Name */}
+                        <h3 className="text-lg font-semibold text-gray-900 dark:text-gray-100 text-center">
+                          {item.name}
+                        </h3>
                       </CardContent>
-                      <div className="p-4 flex justify-center">
+
+                      {/* Book Now Button */}
+                      <div className="p-4">
                         <Button variant="outline" className="w-full">
                           Book Now
                         </Button>
@@ -115,9 +105,25 @@ const Home = () => {
           <h2 className="text-3xl md:text-4xl font-extrabold text-gray-900 dark:text-gray-100 text-center">
             Popular Cities We Serve
           </h2>
+
           <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-6">
             {cities.map((city, i) => (
-              <CityCard key={i} name={city.name} image={city.image} />
+              <div
+                key={i}
+                className="flex flex-col items-center bg-white dark:bg-gray-900 shadow-sm rounded-lg p-2 hover:shadow-lg transition-all"
+              >
+                {/* City Image */}
+                <img
+                  src={city.image}
+                  alt={city.name}
+                  className="w-full h-38 object-cover border-rose-600 rounded-lg mb-2"
+                />
+
+                {/* City Name */}
+                <h3 className="text-lg font-semibold text-gray-900 dark:text-gray-100 text-center">
+                  {city.name}
+                </h3>
+              </div>
             ))}
           </div>
         </section>

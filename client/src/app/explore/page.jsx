@@ -1,7 +1,7 @@
 "use client";
 import React, { useState } from "react";
 import BikeCard from "@/components/general/BikeCrad";
-import bikes from "@/sampleData/data";
+import bikes from "@/sampleData/Bikedata";
 import {
   Select,
   SelectContent,
@@ -9,11 +9,20 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import Combobox from "@/components/ui/comboBox";
-import { Label } from "@/components/ui/label"; // Added ShadCN Label
+import { Label } from "@/components/ui/label";
+import {
+  Pagination,
+  PaginationContent,
+  PaginationEllipsis,
+  PaginationItem,
+  PaginationLink,
+  PaginationNext,
+  PaginationPrevious,
+} from "@/components/ui/pagination";
 
+// Reusable modal
 const Modal = ({ isOpen, onClose, children }) => {
   if (!isOpen) return null;
   return (
@@ -28,6 +37,36 @@ const Modal = ({ isOpen, onClose, children }) => {
         {children}
       </div>
     </div>
+  );
+};
+
+// Pagination component
+const PaginationDemo = () => {
+  return (
+    <Pagination className="mt-8">
+      <PaginationContent>
+        <PaginationItem>
+          <PaginationPrevious href="#" />
+        </PaginationItem>
+        <PaginationItem>
+          <PaginationLink href="#">1</PaginationLink>
+        </PaginationItem>
+        <PaginationItem>
+          <PaginationLink href="#" isActive>
+            2
+          </PaginationLink>
+        </PaginationItem>
+        <PaginationItem>
+          <PaginationLink href="#">3</PaginationLink>
+        </PaginationItem>
+        <PaginationItem>
+          <PaginationEllipsis />
+        </PaginationItem>
+        <PaginationItem>
+          <PaginationNext href="#" />
+        </PaginationItem>
+      </PaginationContent>
+    </Pagination>
   );
 };
 
@@ -65,9 +104,9 @@ const ExplorePage = () => {
             <SelectItem value="suzuki">Suzuki</SelectItem>
             <SelectItem value="hero">Hero</SelectItem>
             <SelectItem value="ktm">KTM</SelectItem>
-            <SelectItem value="tv">TVS</SelectItem>
-            <SelectItem value="ktm">Kawasaki</SelectItem>
-            <SelectItem value="ktm">Royal Enfield</SelectItem>
+            <SelectItem value="tvs">TVS</SelectItem>
+            <SelectItem value="kawasaki">Kawasaki</SelectItem>
+            <SelectItem value="royal-enfield">Royal Enfield</SelectItem>
           </SelectContent>
         </Select>
       </div>
@@ -105,10 +144,15 @@ const ExplorePage = () => {
         </div>
 
         {/* Right: Bike Cards */}
-        <div className="w-full lg:w-4/5 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-          {bikes.map((bike) => (
-            <BikeCard key={bike.id} bike={bike} />
-          ))}
+        <div className="w-full lg:w-4/5">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+            {bikes.map((bike) => (
+              <BikeCard key={bike.id} bike={bike} />
+            ))}
+          </div>
+
+          {/* Pagination placed here */}
+          <PaginationDemo />
         </div>
       </div>
 

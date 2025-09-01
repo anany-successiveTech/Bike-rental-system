@@ -709,7 +709,7 @@ export default function SignupPage() {
 
                   <Button
                     onClick={(e) => handleSubmit(e, "provider")}
-                    className="w-full h-11 bg-green-600 hover:bg-green-700"
+                    className="w-full h-11 bg-green-600 text-white hover:bg-green-700"
                     disabled={isLoading}
                   >
                     {isLoading ? (

@@ -6,7 +6,7 @@ import authentication from "../middleware/authentication.js";
 
 const bookingRouter = express.Router();
 
-bookingRouter.post("/book-bike", validate(createBookingSchema), authentication, createBooking);
+bookingRouter.post("/book-bike", validate(createBookingSchema), createBooking);
 
 bookingRouter.get("/see-bookings", authentication, getBikeBookings);
 

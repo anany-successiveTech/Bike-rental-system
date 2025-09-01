@@ -6,7 +6,7 @@ import { Input } from "@/components/ui/input";
 import { toast } from "sonner";
 import { Label } from "@/components/ui/label";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Loader2, File } from "lucide-react";
+import { Loader2, ImageUp } from "lucide-react";
 import apiInstantce from "@/lib/axios";
 
 export default function PartnerPage() {
@@ -81,16 +81,18 @@ export default function PartnerPage() {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gray-50 dark:bg-gray-900 p-6">
-      <div className="lg:w-1/2 mt-4">
-        <Card className="bg-white/90 backdrop-blur-md shadow-lg">
+    <div className="min-h-screen flex items-center justify-center bg-background p-6">
+      <div className="w-full max-w-lg">
+        <Card className="bg-card border border-border shadow-lg">
           <CardHeader>
-            <CardTitle>Upload Your Bike</CardTitle>
+            <CardTitle className="text-2xl font-semibold text-foreground">
+              Upload Your Bike
+            </CardTitle>
           </CardHeader>
           <CardContent>
-            <form onSubmit={handleSubmit} className="space-y-4">
+            <form onSubmit={handleSubmit} className="space-y-5">
               <div>
-                <Label htmlFor="name">Bike Name </Label>
+                <Label htmlFor="name">Bike Name</Label>
                 <Input
                   id="name"
                   name="name"
@@ -100,8 +102,9 @@ export default function PartnerPage() {
                   required
                 />
               </div>
+
               <div>
-                <Label htmlFor="companyName">Company Name </Label>
+                <Label htmlFor="companyName">Company Name</Label>
                 <Input
                   id="companyName"
                   name="companyName"
@@ -111,9 +114,10 @@ export default function PartnerPage() {
                   required
                 />
               </div>
+
               <div>
                 <Label htmlFor="vehicleRegistration">
-                  Vehicle Registration{" "}
+                  Vehicle Registration
                 </Label>
                 <Input
                   id="vehicleRegistration"
@@ -124,9 +128,10 @@ export default function PartnerPage() {
                   required
                 />
               </div>
+
               <div className="grid grid-cols-2 gap-4">
                 <div>
-                  <Label htmlFor="rentPrice">Rent Price (₹/day) </Label>
+                  <Label htmlFor="rentPrice">Rent Price (₹/day)</Label>
                   <Input
                     id="rentPrice"
                     name="rentPrice"
@@ -138,7 +143,7 @@ export default function PartnerPage() {
                   />
                 </div>
                 <div>
-                  <Label htmlFor="securityDeposit">Security Deposit (₹) </Label>
+                  <Label htmlFor="securityDeposit">Security Deposit (₹)</Label>
                   <Input
                     id="securityDeposit"
                     name="securityDeposit"
@@ -150,8 +155,9 @@ export default function PartnerPage() {
                   />
                 </div>
               </div>
+
               <div>
-                <Label htmlFor="location">Location </Label>
+                <Label htmlFor="location">Location</Label>
                 <Input
                   id="location"
                   name="location"
@@ -161,6 +167,7 @@ export default function PartnerPage() {
                   required
                 />
               </div>
+
               <div className="grid grid-cols-2 gap-4">
                 <div>
                   <Label htmlFor="rating">Rating (0-5)</Label>
@@ -188,24 +195,22 @@ export default function PartnerPage() {
                   />
                 </div>
               </div>
-              <div>
-                <div className="flex gap-2">
-                  <span className="mt-1.5">
-                    <File />
-                  </span>
-                  <Label htmlFor="bikeImage" className="mt-1.5">
-                    Image
-                  </Label>
-                  <Input
-                    id="bikeImage"
-                    name="bikeImage"
-                    type="file"
-                    accept="image/*"
-                    onChange={handleChange}
-                    required
-                  />
+
+              <div className="flex">
+                <div className="flex mr-3 items-center gap-2 pt-2">
+                  <ImageUp />
                 </div>
+                <Input
+                  id="bikeImage"
+                  name="bikeImage"
+                  type="file"
+                  accept="image/*"
+                  onChange={handleChange}
+                  required
+                  className="cursor-pointer"
+                />
               </div>
+
               <Button type="submit" className="w-full" disabled={loading}>
                 {loading ? (
                   <>

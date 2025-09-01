@@ -1,15 +1,16 @@
 "use client";
 
-import { useState, useContext } from "react";
+import { useState, useContext, useEffect } from "react";
 import { Menu, X, Bike, User } from "lucide-react";
 import Link from "next/link";
 import { Button } from "../ui/button";
 import LoginModal from "@/components/general/loginModal";
 import ContactModal from "@/components/general/contactModal";
+import ProfileModal from "@/components/general/profile";
+import SettingsModal from "@/components/general/setting";
 import { ModeToggle } from "../global/themeButton";
 import { FavoritesContext } from "@/context/favoriteCount";
 import { useRouter } from "next/navigation";
-import Combobox from "../ui/comboBox";
 
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 
@@ -25,25 +26,71 @@ const links = [
   { name: "Blogs", href: "/blogs" },
   { name: "Support", href: "/support" },
   { name: "Contact" },
-  { name: "Partner", href: "/partner" },
+  { name: "Partner", href: "/partner", requiresAuth: true },
   { name: "Explore", href: "/explore" },
+  { name: "Booking", href: "/booking", requiresAuth: true },
 ];
 
 const Navbar = () => {
   const [isOpen, setIsOpen] = useState(false);
   const [loginOpen, setLoginOpen] = useState(false);
   const [contactOpen, setContactOpen] = useState(false);
+  const [profileOpen, setProfileOpen] = useState(false);
+  const [settingsOpen, setSettingsOpen] = useState(false);
+  const [userData, setUserData] = useState(null);
+  const [isAuthenticated, setIsAuthenticated] = useState(false);
+  const [isHydrated, setIsHydrated] = useState(false);
 
   const { favoriteCount } = useContext(FavoritesContext);
   const router = useRouter();
 
-  // ---- fake auth state (replace with your real auth system) ----
-  const [isAuthenticated, setIsAuthenticated] = useState(false);
+  // Check authentication status on component mount
+  useEffect(() => {
+    const checkAuth = () => {
+      try {
+        const storedUserData = localStorage.getItem("user");
+        if (storedUserData) {
+          const parsedUserData = JSON.parse(storedUserData);
+          setUserData(parsedUserData);
+          setIsAuthenticated(true);
+        } else {
+          setUserData(null);
+          setIsAuthenticated(false);
+        }
+      } catch (error) {
+        console.error("Error parsing user data:", error);
+        setUserData(null);
+        setIsAuthenticated(false);
+      }
+      setIsHydrated(true);
+    };
+
+    checkAuth();
+  }, []);
+
+  // Filter links based on authentication status - only after hydration
+  const filteredLinks = isHydrated ? links.filter(link => {
+    if (!link.requiresAuth) return true;
+    return isAuthenticated;
+  }) : links.filter(link => !link.requiresAuth);
 
   const handleLogout = () => {
     setIsAuthenticated(false);
-    // clear tokens / session here
+    setUserData(null);
+
+    localStorage.removeItem("token");
+    localStorage.removeItem("user");
+    sessionStorage.clear();
+
     router.push("/");
+  };
+
+  const handleProfileClick = () => {
+    setProfileOpen(true);
+  };
+
+  const handleSettingsClick = () => {
+    setSettingsOpen(true);
   };
 
   return (
@@ -73,7 +120,7 @@ const Navbar = () => {
 
           {/* Desktop Links */}
           <div className="hidden ml-20 lg:flex items-center space-x-6">
-            {links.map((link) =>
+            {filteredLinks.map((link) =>
               link.name === "Contact" ? (
                 <button
                   key={link.name}
@@ -96,7 +143,6 @@ const Navbar = () => {
         </div>
 
         {/* Right Actions */}
-        {/* Right Actions */}
         <div className="flex items-center space-x-4">
           <div className="hidden md:block">
             <ModeToggle />
@@ -111,7 +157,7 @@ const Navbar = () => {
           </Button>
 
           <div className="hidden md:flex items-center space-x-3">
-            {isAuthenticated ? (
+            {isHydrated && isAuthenticated ? (
               <DropdownMenu>
                 <DropdownMenuTrigger asChild>
                   <Avatar className="cursor-pointer">
@@ -122,10 +168,10 @@ const Navbar = () => {
                   </Avatar>
                 </DropdownMenuTrigger>
                 <DropdownMenuContent align="end" className="w-40">
-                  <DropdownMenuItem onClick={() => router.push("/profile")}>
+                  <DropdownMenuItem onClick={handleProfileClick}>
                     Profile
                   </DropdownMenuItem>
-                  <DropdownMenuItem onClick={() => router.push("/settings")}>
+                  <DropdownMenuItem onClick={handleSettingsClick}>
                     Settings
                   </DropdownMenuItem>
                   <DropdownMenuItem onClick={handleLogout}>
@@ -134,19 +180,35 @@ const Navbar = () => {
                 </DropdownMenuContent>
               </DropdownMenu>
             ) : (
-              <>
-                <Button
-                  variant="google"
-                  onClick={() => setLoginOpen(true)}
-                  className="font-medium border"
-                >
-                  Login
-                </Button>
-                <Button variant="google" asChild className="font-medium border">
-                  <Link href="/signup">Sign Up</Link>
-                </Button>
-              </>
+              !isAuthenticated && (
+                <>
+                  <Button
+                    variant="google"
+                    onClick={() => setLoginOpen(true)}
+                    className="font-medium border"
+                  >
+                    Login
+                  </Button>
+                  <Button variant="google" asChild className="font-medium border">
+                    <Link href="/signup">Sign Up</Link>
+                  </Button>
+                </>
+              )
             )}
+          </div>
+
+          {/* Mobile Menu Toggle */}
+          <div className="md:hidden">
+            <button
+              onClick={() => setIsOpen(!isOpen)}
+              className="p-2 rounded-lg text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors duration-200"
+            >
+              {isOpen ? (
+                <X className="w-6 h-6" />
+              ) : (
+                <Menu className="w-6 h-6" />
+              )}
+            </button>
           </div>
         </div>
       </div>
@@ -166,7 +228,7 @@ const Navbar = () => {
 
           {/* Links */}
           <div className="flex flex-col space-y-4 py-6 px-6">
-            {links.map((link) =>
+            {filteredLinks.map((link) =>
               link.name === "Contact" ? (
                 <button
                   key={link.name}
@@ -193,7 +255,7 @@ const Navbar = () => {
 
           {/* Actions + Theme Toggle */}
           <div className="flex items-center justify-between py-4 px-6 border-t border-gray-200 dark:border-gray-800">
-            {isAuthenticated ? (
+            {isHydrated && isAuthenticated ? (
               <DropdownMenu>
                 <DropdownMenuTrigger asChild>
                   <Avatar className="cursor-pointer">
@@ -204,10 +266,16 @@ const Navbar = () => {
                   </Avatar>
                 </DropdownMenuTrigger>
                 <DropdownMenuContent align="end" className="w-40">
-                  <DropdownMenuItem onClick={() => router.push("/profile")}>
+                  <DropdownMenuItem onClick={() => {
+                    handleProfileClick();
+                    setIsOpen(false);
+                  }}>
                     Profile
                   </DropdownMenuItem>
-                  <DropdownMenuItem onClick={() => router.push("/settings")}>
+                  <DropdownMenuItem onClick={() => {
+                    handleSettingsClick();
+                    setIsOpen(false);
+                  }}>
                     Settings
                   </DropdownMenuItem>
                   <DropdownMenuItem onClick={handleLogout}>
@@ -216,23 +284,25 @@ const Navbar = () => {
                 </DropdownMenuContent>
               </DropdownMenu>
             ) : (
-              <div className="flex space-x-3">
-                <Button
-                  variant="googleBlue"
-                  onClick={() => {
-                    setLoginOpen(true);
-                    setIsOpen(false);
-                  }}
-                  className="font-medium"
-                >
-                  Login
-                </Button>
-                <Button variant="googleBlue" asChild className="font-medium">
-                  <Link href="/signup" onClick={() => setIsOpen(false)}>
-                    Sign Up
-                  </Link>
-                </Button>
-              </div>
+              !isAuthenticated && (
+                <div className="flex space-x-3">
+                  <Button
+                    variant="googleBlue"
+                    onClick={() => {
+                      setLoginOpen(true);
+                      setIsOpen(false);
+                    }}
+                    className="font-medium"
+                  >
+                    Login
+                  </Button>
+                  <Button variant="googleBlue" asChild className="font-medium">
+                    <Link href="/signup" onClick={() => setIsOpen(false)}>
+                      Sign Up
+                    </Link>
+                  </Button>
+                </div>
+              )
             )}
             <ModeToggle />
           </div>
@@ -244,6 +314,14 @@ const Navbar = () => {
       <ContactModal
         isOpen={contactOpen}
         onClose={() => setContactOpen(false)}
+      />
+      <ProfileModal
+        isOpen={profileOpen}
+        onClose={() => setProfileOpen(false)}
+      />
+      <SettingsModal
+        isOpen={settingsOpen}
+        onClose={() => setSettingsOpen(false)}
       />
     </nav>
   );

@@ -17,8 +17,7 @@ const bikes = [
   { name: "City Hopper", rating: 4.1, tripLimit: 130, securityDeposit: 175, rentPrice: 43, location: "Philadelphia, PA", companyName: "Metro Bikes", vehicleRegistration: "PA-CH130", createdAt: "8/31/2025, 10:15:30 AM", updatedAt: "8/31/2025, 10:15:30 AM", id: "b016" },
   { name: "Hill Rider", rating: 4.7, tripLimit: 180, securityDeposit: 220, rentPrice: 58, location: "Asheville, NC", companyName: "Mountain Rides", vehicleRegistration: "NC-HR180", createdAt: "8/31/2025, 10:15:40 AM", updatedAt: "8/31/2025, 10:15:40 AM", id: "b017" },
   { name: "Metro Cruiser", rating: 4.0, tripLimit: 110, securityDeposit: 160, rentPrice: 38, location: "Dallas, TX", companyName: "Urban Wheels", vehicleRegistration: "TX-MC110", createdAt: "8/31/2025, 10:15:50 AM", updatedAt: "8/31/2025, 10:15:50 AM", id: "b018" },
-  { name: "Adventure King", rating: 4.8, tripLimit: 200, securityDeposit: 250, rentPrice: 60, location: "Denver, CO", companyName: "Peak Adventures", vehicleRegistration: "CO-AK200", createdAt: "8/31/2025, 10:16:00 AM", updatedAt: "8/31/2025, 10:16:00 AM", id: "b019" },
-  { name: "Night Flyer", rating: 4.3, tripLimit: 85, securityDeposit: 150, rentPrice: 42, location: "San Diego, CA", companyName: "Moonlight Riders", vehicleRegistration: "CA-NF085", createdAt: "8/31/2025, 10:16:10 AM", updatedAt: "8/31/2025, 10:16:10 AM", id: "b020" },
+ 
 ];
 
 export default bikes;

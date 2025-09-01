@@ -39,3 +39,80 @@ client/
 ├── package.json            # Dependencies & scripts
 ├── README.md               # Project documentation
 └── ...
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+please change a design of this  booking card little bit  take a refference from this 
+it should look exactely like this and other things to be taken care of  shadcn theme, responsiveness and
+this is the information this card will have 
+the real booking data 
+
+  {
+    "bike": "64fb9999abcd5678ef900001", 
+    "user": "64fb1234abcd5678ef901234",
+    "bikeImage": "https://example.com/bikes/royal-enfield.jpg",
+    "startDate": "2024-08-10T10:00:00.000Z",
+    "endDate": "2024-08-15T18:00:00.000Z",
+    "kilometers": 120,
+    "rentedPrice": 2500,
+    "status": "pending"
+  }
+so keep this fields in the card to be shown but follow design the pic i gave you 
+
+now do your best
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  const formatDate = (dateString) => {
+    return new Date(dateString).toLocaleDateString('en-GB', {
+      day: '2-digit',
+      month: '2-digit',
+      year: 'numeric'
+    });
+  };

@@ -67,7 +67,7 @@ const FavoritesPage = () => {
 
           {/* Bottom Actions */}
           <div className="mt-8 flex flex-col sm:flex-row gap-4 justify-center">
-            <Button variant="google" onClick={() => window.history.back()}>
+            <Button variant="google" onClick={() => router.push("/explore")}>
               Continue Exploring
             </Button>
           </div>
