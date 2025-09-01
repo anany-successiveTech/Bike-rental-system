@@ -11,18 +11,26 @@ import bookingRouter from "./routes/bookingRouter.js";
 
 dotenv.config();
 const app = express();
-app.use(cors()); // Enable CORS for all routes, that way frontend can access the all backend routes.
+app.use(
+  cors({
+    origin: "http://localhost:3000",
+    credentials: true,
+  })
+);
 app.use(express.json());
 
-const MONGO_URI = process.env.MONGODB_URI || "mongodb://localhost:27017/Bike-rental-system";
+
+const MONGO_URI =
+  process.env.MONGODB_URI || "mongodb://localhost:27017/Bike-rental-system";
 
 const PORT = process.env.PORT || 5200;
+
 app.use(express.json());
 app.set("trust proxy", true); // tells Express to trust the proxy and use the real client IP. (read more about it).
 
 // Home route just for testing.
-app.get('/', (req, res) => {
-  res.send('API is running...');
+app.get("/", (req, res) => {
+  res.send("API is running...");
 });
 
 // Routes
@@ -31,7 +39,6 @@ app.use("/api/v1/users", userRouter);
 app.use("/api/v1/bikes", bikeRouter);
 app.use("/api/v1/bookings", bookingRouter);
 // app.use("/api/v1/payments", paymentRouter);
-
 
 // Global error handler middleware.
 app.use(handleGlobalError);

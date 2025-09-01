@@ -18,6 +18,7 @@ const JWT_SECRET = process.env.JWT_SECRET;
 // Logout User
 
 export const registerUser = async (req, res) => {
+  console.log("calling register user");
   try {
     const {
       firstName,
@@ -77,16 +78,19 @@ export const registerUser = async (req, res) => {
 };
 
 export const loginUser = async (req, res) => {
+  console.log("calling login");
   try {
     const { email, password } = req.body;
 
     // Find user by email and explicitly select password field
-    // "SELECT +password" is needed because in schema we have declared select: false for password field.
+    // "SELECT + password" is needed because in schema we have declared select: false for password field.
 
     const user = await User.findOne({ email }).select("+password");
     if (!user) {
       return successResponse(res, "Invalid email or password", {}, 401);
     }
+    // console.log(`reqeuest came from ${req.ip}`);
+    // console.log(email, password);
 
     // Compare password
     const isPasswordValid = await bcrypt.compare(password, user.password);
@@ -100,6 +104,7 @@ export const loginUser = async (req, res) => {
       JWT_SECRET,
       { expiresIn: "10d" }
     );
+    // console.log("token", token);
 
     const loginData = {
       email: user.email,

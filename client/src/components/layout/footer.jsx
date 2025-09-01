@@ -6,7 +6,7 @@ const Footer = () => {
       <div className="max-w-7xl mx-auto px-4 grid grid-cols-1 md:grid-cols-5 gap-8">
         {/* Logo & Description */}
         <div className="md:col-span-2">
-          <h1 className="mb-3 bg-gradient-to-r from-[#feda75] via-[#d62976] via-[#962fbf] via-[#4f5bd5] to-[#4f5bd5] text-transparent bg-clip-text font-bold text-4xl">Bikers</h1>
+          <h1 className="mb-3 bg-gradient-to-r from-[#feda75] via-[#d62976] via-[#962fbf] via-[#4f5bd5] to-[#4f5bd5] text-transparent bg-clip-text font-bold text-4xl">Motorcycle</h1>
           <p className="text-sm mb-4">Helping you find the best Bikes and rentals with ease. Reliable, fast, and trusted by thousands.</p>
 
           {/* Social Media Links */}

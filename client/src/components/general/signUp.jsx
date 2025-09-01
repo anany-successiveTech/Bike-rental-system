@@ -1,119 +1,145 @@
 "use client";
 
-import { useState } from 'react';
-import { Card, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
-import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
-import { Label } from '@/components/ui/label';
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { 
-  User, 
-  Mail, 
-  Lock, 
-  Phone, 
-  MapPin, 
-  Building, 
-  FileText, 
-  CreditCard, 
+import { useState } from "react";
+import {
+  Card,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import {
+  User,
+  Mail,
+  Lock,
+  Phone,
+  MapPin,
+  Building,
+  FileText,
+  CreditCard,
   Hash,
   Users,
   Store,
-  Loader2
-} from 'lucide-react';
+  Loader2,
+} from "lucide-react";
+import { toast } from "sonner";
+import apiInstantce from "@/lib/axios";
+import axios from "axios";
 
 export default function SignupPage() {
-  const [activeTab, setActiveTab] = useState('customer');
+  const [activeTab, setActiveTab] = useState("customer");
   const [isLoading, setIsLoading] = useState(false);
   const [isOpen, setIsOpen] = useState(false);
   const [loginOpen, setLoginOpen] = useState(false);
-  
+
   // Customer form state
   const [customerData, setCustomerData] = useState({
-    firstName: '',
-    lastName: '',
-    email: '',
-    mobileNumber: '',
-    password: '',
-    confirmPassword: '',
-    gender: '',
+    firstName: "",
+    lastName: "",
+    email: "",
+    mobileNumber: "",
+    password: "",
+    confirmPassword: "",
+    gender: "",
     address: {
-      city: '',
-      state: '',
-      country: 'India',
-      zipCode: ''
-    }
+      city: "",
+      state: "",
+      country: "India",
+      zipCode: "",
+    },
   });
 
   // Provider form state
   const [providerData, setProviderData] = useState({
-    firstName: '',
-    lastName: '',
-    email: '',
-    mobileNumber: '',
-    password: '',
-    confirmPassword: '',
-    gender: '',
+    firstName: "",
+    lastName: "",
+    email: "",
+    mobileNumber: "",
+    password: "",
+    confirmPassword: "",
+    gender: "",
     address: {
-      city: '',
-      state: '',
-      country: 'India',
-      zipCode: ''
+      city: "",
+      state: "",
+      country: "India",
+      zipCode: "",
     },
-    businessName: '',
+    businessName: "",
     document: {
-      panNo: '',
-      aadhar: '',
-      GST: '',
-      registrationNo: ''
-    }
+      panNo: "",
+      aadhar: "",
+      GST: "",
+      registrationNo: "",
+    },
   });
 
   const handleCustomerChange = (field, value) => {
-    if (field.includes('.')) {
-      const [parent, child] = field.split('.');
-      setCustomerData(prev => ({
+    if (field.includes(".")) {
+      const [parent, child] = field.split(".");
+      setCustomerData((prev) => ({
         ...prev,
         [parent]: {
           ...prev[parent],
-          [child]: value
-        }
+          [child]: value,
+        },
       }));
     } else {
-      setCustomerData(prev => ({ ...prev, [field]: value }));
+      setCustomerData((prev) => ({ ...prev, [field]: value }));
     }
   };
 
   const handleProviderChange = (field, value) => {
-    if (field.includes('.')) {
-      const [parent, child] = field.split('.');
-      setProviderData(prev => ({
+    if (field.includes(".")) {
+      const [parent, child] = field.split(".");
+      setProviderData((prev) => ({
         ...prev,
         [parent]: {
           ...prev[parent],
-          [child]: value
-        }
+          [child]: value,
+        },
       }));
     } else {
-      setProviderData(prev => ({ ...prev, [field]: value }));
+      setProviderData((prev) => ({ ...prev, [field]: value }));
     }
   };
-
   const handleSubmit = async (e, userType) => {
     e.preventDefault();
     setIsLoading(true);
-    
-    const data = userType === 'customer' ? 
-      { ...customerData, role: 'customer' } : 
-      { ...providerData, role: 'provider' };
-    
+
+    const data =
+      userType === "customer"
+        ? { ...customerData, role: "customer" }
+        : { ...providerData, role: "provider" };
+
     try {
-      // Simulate API call
-      await new Promise(resolve => setTimeout(resolve, 2000));
-      console.log('Registration data:', data);
-      alert(`${userType} registration successful!`);
-    } catch (error) {
-      alert('Registration failed!');
+      //  API call
+      const response = await axios.post("http://localhost:3900/api/v1/auth/register", data);
+
+      console.log("Registration response:", response.data);
+
+      toast.success(`${userType} registration successful!`);
+
+      // Optionally, store token/user if returned
+      if (response.data.user?.token) {
+        localStorage.setItem("token", response.data.user.token);
+        localStorage.setItem("user", JSON.stringify(response.data.user));
+      }
+    } catch (error) { 
+      if (error.response) {
+        toast.error(error.response.data.message || "Registration failed");
+      } else {
+        toast.error("Network error. Please try again.");
+      }
     } finally {
       setIsLoading(false);
     }
@@ -124,34 +150,47 @@ export default function SignupPage() {
       <div className="max-w-4xl mx-auto  px-6">
         {/* Header */}
         <div className="text-center mb-8">
-          <h1 className="text-3xl font-bold text-gray-900 mb-2 dark:text-gray-300">Join BikeRental</h1>
-          <p className="text-gray-600 dark:text-gray-400">Create your account and start your adventure</p>
+          <h1 className="text-3xl font-bold text-gray-900 mb-2 dark:text-gray-300">
+            Join BikeRental
+          </h1>
+          <p className="text-gray-600 dark:text-gray-400">
+            Create your account and start your adventure
+          </p>
         </div>
 
         {/* Signup Form */}
         <Card className="shadow-lg">
           <CardHeader>
-            <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
+            <Tabs
+              value={activeTab}
+              onValueChange={setActiveTab}
+              className="w-full"
+            >
               <TabsList className="grid w-full grid-cols-2 mb-4">
-                <TabsTrigger value="customer" className="flex items-center gap-2">
+                <TabsTrigger
+                  value="customer"
+                  className="flex items-center gap-2"
+                >
                   <Users className="w-4 h-4" />
                   Customer
                 </TabsTrigger>
-                <TabsTrigger value="provider" className="flex items-center gap-2">
+                <TabsTrigger
+                  value="provider"
+                  className="flex items-center gap-2"
+                >
                   <Store className="w-4 h-4" />
                   Provider
                 </TabsTrigger>
               </TabsList>
-              
+
               <div className="text-center">
                 <CardTitle className="text-xl">
-                  {activeTab === 'customer' ? 'Rent a Bike' : 'List Your Bikes'}
+                  {activeTab === "customer" ? "Rent a Bike" : "List Your Bikes"}
                 </CardTitle>
                 <CardDescription>
-                  {activeTab === 'customer' 
-                    ? 'Join thousands of adventurers exploring on two wheels'
-                    : 'Start earning by renting out your motorcycles'
-                  }
+                  {activeTab === "customer"
+                    ? "Join thousands of adventurers exploring on two wheels"
+                    : "Start earning by renting out your motorcycles"}
                 </CardDescription>
               </div>
 
@@ -167,7 +206,9 @@ export default function SignupPage() {
                         <Input
                           id="firstName"
                           value={customerData.firstName}
-                          onChange={(e) => handleCustomerChange('firstName', e.target.value)}
+                          onChange={(e) =>
+                            handleCustomerChange("firstName", e.target.value)
+                          }
                           placeholder="Anany"
                           className="pl-10"
                           required
@@ -179,7 +220,9 @@ export default function SignupPage() {
                       <Input
                         id="lastName"
                         value={customerData.lastName}
-                        onChange={(e) => handleCustomerChange('lastName', e.target.value)}
+                        onChange={(e) =>
+                          handleCustomerChange("lastName", e.target.value)
+                        }
                         placeholder="more"
                         required
                       />
@@ -194,7 +237,9 @@ export default function SignupPage() {
                         id="email"
                         type="email"
                         value={customerData.email}
-                        onChange={(e) => handleCustomerChange('email', e.target.value)}
+                        onChange={(e) =>
+                          handleCustomerChange("email", e.target.value)
+                        }
                         placeholder="anany.sharma@example.com"
                         className="pl-10"
                         required
@@ -209,8 +254,10 @@ export default function SignupPage() {
                       <Input
                         id="mobile"
                         value={customerData.mobileNumber}
-                        onChange={(e) => handleCustomerChange('mobileNumber', e.target.value)}
-                        placeholder="+91 9876543210"
+                        onChange={(e) =>
+                          handleCustomerChange("mobileNumber", e.target.value)
+                        }
+                        placeholder=" 9876543210"
                         className="pl-10"
                         required
                       />
@@ -219,7 +266,12 @@ export default function SignupPage() {
 
                   <div>
                     <Label htmlFor="gender">Gender</Label>
-                    <Select value={customerData.gender} onValueChange={(value) => handleCustomerChange('gender', value)}>
+                    <Select
+                      value={customerData.gender}
+                      onValueChange={(value) =>
+                        handleCustomerChange("gender", value)
+                      }
+                    >
                       <SelectTrigger>
                         <SelectValue placeholder="Select gender" />
                       </SelectTrigger>
@@ -243,8 +295,10 @@ export default function SignupPage() {
                         <Input
                           id="city"
                           value={customerData.address.city}
-                          onChange={(e) => handleCustomerChange('address.city', e.target.value)}
-                          placeholder="Gwalior"
+                          onChange={(e) =>
+                            handleCustomerChange("address.city", e.target.value)
+                          }
+                          placeholder="Chhindwara"
                           required
                         />
                       </div>
@@ -253,7 +307,12 @@ export default function SignupPage() {
                         <Input
                           id="state"
                           value={customerData.address.state}
-                          onChange={(e) => handleCustomerChange('address.state', e.target.value)}
+                          onChange={(e) =>
+                            handleCustomerChange(
+                              "address.state",
+                              e.target.value
+                            )
+                          }
                           placeholder="Madhya Pradesh"
                           required
                         />
@@ -265,7 +324,12 @@ export default function SignupPage() {
                         <Input
                           id="country"
                           value={customerData.address.country}
-                          onChange={(e) => handleCustomerChange('address.country', e.target.value)}
+                          onChange={(e) =>
+                            handleCustomerChange(
+                              "address.country",
+                              e.target.value
+                            )
+                          }
                           placeholder="India"
                           required
                         />
@@ -275,7 +339,12 @@ export default function SignupPage() {
                         <Input
                           id="zipCode"
                           value={customerData.address.zipCode}
-                          onChange={(e) => handleCustomerChange('address.zipCode', e.target.value)}
+                          onChange={(e) =>
+                            handleCustomerChange(
+                              "address.zipCode",
+                              e.target.value
+                            )
+                          }
                           placeholder="474001"
                           required
                         />
@@ -293,7 +362,9 @@ export default function SignupPage() {
                           id="password"
                           type="password"
                           value={customerData.password}
-                          onChange={(e) => handleCustomerChange('password', e.target.value)}
+                          onChange={(e) =>
+                            handleCustomerChange("password", e.target.value)
+                          }
                           placeholder="Password@123"
                           className="pl-10"
                           required
@@ -306,16 +377,21 @@ export default function SignupPage() {
                         id="confirmPassword"
                         type="password"
                         value={customerData.confirmPassword}
-                        onChange={(e) => handleCustomerChange('confirmPassword', e.target.value)}
+                        onChange={(e) =>
+                          handleCustomerChange(
+                            "confirmPassword",
+                            e.target.value
+                          )
+                        }
                         placeholder="Confirm password"
                         required
                       />
                     </div>
                   </div>
 
-                  <Button 
-                    onClick={(e) => handleSubmit(e, 'customer')} 
-                    className="w-full h-11 bg-blue-600 hover:bg-blue-700" 
+                  <Button
+                    onClick={(e) => handleSubmit(e, "customer")}
+                    className="w-full h-11 bg-blue-500 text-white hover:bg-blue-700"
                     disabled={isLoading}
                   >
                     {isLoading ? (
@@ -324,7 +400,7 @@ export default function SignupPage() {
                         Creating Account...
                       </>
                     ) : (
-                      'Create Customer Account'
+                      "Create Customer Account"
                     )}
                   </Button>
                 </div>
@@ -342,7 +418,9 @@ export default function SignupPage() {
                         <Input
                           id="providerFirstName"
                           value={providerData.firstName}
-                          onChange={(e) => handleProviderChange('firstName', e.target.value)}
+                          onChange={(e) =>
+                            handleProviderChange("firstName", e.target.value)
+                          }
                           placeholder="Rohit"
                           className="pl-10"
                           required
@@ -354,7 +432,9 @@ export default function SignupPage() {
                       <Input
                         id="providerLastName"
                         value={providerData.lastName}
-                        onChange={(e) => handleProviderChange('lastName', e.target.value)}
+                        onChange={(e) =>
+                          handleProviderChange("lastName", e.target.value)
+                        }
                         placeholder="Verma"
                         required
                       />
@@ -369,7 +449,9 @@ export default function SignupPage() {
                         id="providerEmail"
                         type="email"
                         value={providerData.email}
-                        onChange={(e) => handleProviderChange('email', e.target.value)}
+                        onChange={(e) =>
+                          handleProviderChange("email", e.target.value)
+                        }
                         placeholder="rohit.verma@example.com"
                         className="pl-10"
                         required
@@ -385,7 +467,9 @@ export default function SignupPage() {
                         <Input
                           id="providerMobile"
                           value={providerData.mobileNumber}
-                          onChange={(e) => handleProviderChange('mobileNumber', e.target.value)}
+                          onChange={(e) =>
+                            handleProviderChange("mobileNumber", e.target.value)
+                          }
                           placeholder="9123456789"
                           className="pl-10"
                           required
@@ -394,7 +478,12 @@ export default function SignupPage() {
                     </div>
                     <div>
                       <Label htmlFor="providerGender">Gender</Label>
-                      <Select value={providerData.gender} onValueChange={(value) => handleProviderChange('gender', value)}>
+                      <Select
+                        value={providerData.gender}
+                        onValueChange={(value) =>
+                          handleProviderChange("gender", value)
+                        }
+                      >
                         <SelectTrigger>
                           <SelectValue placeholder="Select gender" />
                         </SelectTrigger>
@@ -420,7 +509,9 @@ export default function SignupPage() {
                         <Input
                           id="businessName"
                           value={providerData.businessName}
-                          onChange={(e) => handleProviderChange('businessName', e.target.value)}
+                          onChange={(e) =>
+                            handleProviderChange("businessName", e.target.value)
+                          }
                           placeholder="Verma Bike Rentals"
                           className="pl-10"
                           required
@@ -441,7 +532,9 @@ export default function SignupPage() {
                         <Input
                           id="providerCity"
                           value={providerData.address.city}
-                          onChange={(e) => handleProviderChange('address.city', e.target.value)}
+                          onChange={(e) =>
+                            handleProviderChange("address.city", e.target.value)
+                          }
                           placeholder="Noida"
                           required
                         />
@@ -451,7 +544,12 @@ export default function SignupPage() {
                         <Input
                           id="providerState"
                           value={providerData.address.state}
-                          onChange={(e) => handleProviderChange('address.state', e.target.value)}
+                          onChange={(e) =>
+                            handleProviderChange(
+                              "address.state",
+                              e.target.value
+                            )
+                          }
                           placeholder="Uttar Pradesh"
                           required
                         />
@@ -463,7 +561,12 @@ export default function SignupPage() {
                         <Input
                           id="providerCountry"
                           value={providerData.address.country}
-                          onChange={(e) => handleProviderChange('address.country', e.target.value)}
+                          onChange={(e) =>
+                            handleProviderChange(
+                              "address.country",
+                              e.target.value
+                            )
+                          }
                           placeholder="India"
                           required
                         />
@@ -473,7 +576,12 @@ export default function SignupPage() {
                         <Input
                           id="providerZipCode"
                           value={providerData.address.zipCode}
-                          onChange={(e) => handleProviderChange('address.zipCode', e.target.value)}
+                          onChange={(e) =>
+                            handleProviderChange(
+                              "address.zipCode",
+                              e.target.value
+                            )
+                          }
                           placeholder="201301"
                           required
                         />
@@ -495,7 +603,12 @@ export default function SignupPage() {
                           <Input
                             id="panNo"
                             value={providerData.document.panNo}
-                            onChange={(e) => handleProviderChange('document.panNo', e.target.value)}
+                            onChange={(e) =>
+                              handleProviderChange(
+                                "document.panNo",
+                                e.target.value
+                              )
+                            }
                             placeholder="ABCDE1234F"
                             className="pl-10"
                             required
@@ -509,7 +622,12 @@ export default function SignupPage() {
                           <Input
                             id="aadhar"
                             value={providerData.document.aadhar}
-                            onChange={(e) => handleProviderChange('document.aadhar', e.target.value)}
+                            onChange={(e) =>
+                              handleProviderChange(
+                                "document.aadhar",
+                                e.target.value
+                              )
+                            }
                             placeholder="123412341234"
                             className="pl-10"
                             required
@@ -523,17 +641,26 @@ export default function SignupPage() {
                         <Input
                           id="gst"
                           value={providerData.document.GST}
-                          onChange={(e) => handleProviderChange('document.GST', e.target.value)}
+                          onChange={(e) =>
+                            handleProviderChange("document.GST", e.target.value)
+                          }
                           placeholder="09ABCDE1234F1Z5"
                           required
                         />
                       </div>
                       <div>
-                        <Label htmlFor="registration">Registration Number</Label>
+                        <Label htmlFor="registration">
+                          Registration Number
+                        </Label>
                         <Input
                           id="registration"
                           value={providerData.document.registrationNo}
-                          onChange={(e) => handleProviderChange('document.registrationNo', e.target.value)}
+                          onChange={(e) =>
+                            handleProviderChange(
+                              "document.registrationNo",
+                              e.target.value
+                            )
+                          }
                           placeholder="UP16AB1234"
                           required
                         />
@@ -551,7 +678,9 @@ export default function SignupPage() {
                           id="providerPassword"
                           type="password"
                           value={providerData.password}
-                          onChange={(e) => handleProviderChange('password', e.target.value)}
+                          onChange={(e) =>
+                            handleProviderChange("password", e.target.value)
+                          }
                           placeholder="SecurePass@456"
                           className="pl-10"
                           required
@@ -559,21 +688,28 @@ export default function SignupPage() {
                       </div>
                     </div>
                     <div>
-                      <Label htmlFor="providerConfirmPassword">Confirm Password</Label>
+                      <Label htmlFor="providerConfirmPassword">
+                        Confirm Password
+                      </Label>
                       <Input
                         id="providerConfirmPassword"
                         type="password"
                         value={providerData.confirmPassword}
-                        onChange={(e) => handleProviderChange('confirmPassword', e.target.value)}
+                        onChange={(e) =>
+                          handleProviderChange(
+                            "confirmPassword",
+                            e.target.value
+                          )
+                        }
                         placeholder="Confirm password"
                         required
                       />
                     </div>
                   </div>
 
-                  <Button 
-                    onClick={(e) => handleSubmit(e, 'provider')} 
-                    className="w-full h-11 bg-green-600 hover:bg-green-700" 
+                  <Button
+                    onClick={(e) => handleSubmit(e, "provider")}
+                    className="w-full h-11 bg-green-600 hover:bg-green-700"
                     disabled={isLoading}
                   >
                     {isLoading ? (
@@ -582,7 +718,7 @@ export default function SignupPage() {
                         Creating Provider Account...
                       </>
                     ) : (
-                      'Create Provider Account'
+                      "Create Provider Account"
                     )}
                   </Button>
                 </div>
@@ -594,13 +730,14 @@ export default function SignupPage() {
         {/* Footer */}
         <div className="text-center mt-6">
           <p className="text-md text-gray-600">
-           <span className='mr-1'> Already have an account ?{'  '}</span>
-            <button 
-             onClick={() => {
-                  setLoginOpen(true);
-                  setIsOpen(false);
-                }}
-            className="text-blue-600 hover:text-blue-700 font-medium">
+            <span className="mr-1"> Already have an account ?{"  "}</span>
+            <button
+              onClick={() => {
+                setLoginOpen(true);
+                setIsOpen(false);
+              }}
+              className="text-blue-600 hover:text-blue-700 font-medium"
+            >
               Sign in
             </button>
           </p>

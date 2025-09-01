@@ -10,6 +10,12 @@
 !.yarn/releases
 !.yarn/versions
 
+#Environment variable
+.env
+
+#testing data
+/sampleData
+
 # testing
 /coverage
 

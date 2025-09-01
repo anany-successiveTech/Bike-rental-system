@@ -25,6 +25,7 @@ import { errorResponse } from "../utils/successResponse.js";
 
 export default function validate(schema) {
   return (err, req, res, next) => {
+    console.log('calling validate middleware')
     const { error } = schema.validate(req.body, { abortEarly: false }); // This will return all errors, not just the first one, wait to collect all errors.
 
     if (error) {

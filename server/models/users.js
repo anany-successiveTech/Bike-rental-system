@@ -2,32 +2,14 @@
 import mongoose from "mongoose";
 
 const documentSchema = new mongoose.Schema({
-  panNo: {
-    type: String,
-    trim: true,
-    // unique: true,
-    // sparse: true,
-  },
-  aadhar: {
-    type: String,
-    trim: true,
-    // unique: true,
-    // sparse: true,
-    length: 12,
-  },
-  GST: {
-    type: String,
-    trim: true,
-    // sparse: true,
-    // unique: true,
-  },
-  registrationNo: {
-    type: String,
-    trim: true,
-    // unique: true,
-    // sparse: true,
-  },
+  panNo: { type: String, trim: true },
+  aadhar: { type: String, trim: true, length: 12 },
+  GST: { type: String, trim: true },
+  registrationNo: { type: String, trim: true },
 });
+
+// Sparse unique index for panNo (only enforced if value exists)
+documentSchema.index({ panNo: 1 }, { unique: true, sparse: true });
 
 const userSchema = new mongoose.Schema({
   firstName: { type: String, required: true, trim: true, maxlength: 30 },
@@ -50,9 +32,6 @@ const userSchema = new mongoose.Schema({
     match: /^\d{10}$/,
   },
 
-  // hashed password (not returned by default)
-  // Select : false here ensures that the password field is not returned in queries unless explicitly selected/called for.
-
   password: { type: String, required: true, select: false },
 
   gender: { type: String, enum: ["male", "female", "other"] },
@@ -63,7 +42,9 @@ const userSchema = new mongoose.Schema({
     country: { type: String, required: true, trim: true },
     zipCode: { type: String, required: true, trim: true },
   },
+
   businessName: { type: String, trim: true, maxlength: 100 },
+
   document: {
     type: documentSchema,
     required: function () {
@@ -76,9 +57,18 @@ const userSchema = new mongoose.Schema({
   ownedBikes: [{ type: mongoose.Schema.Types.ObjectId, ref: "Bike" }],
   rentedBikes: [{ type: mongoose.Schema.Types.ObjectId, ref: "Bike" }],
 });
+userSchema.index(
+  { "document.panNo": 1 },
+  {
+    unique: true,
+    partialFilterExpression: {
+      role: "provider",
+      "document.panNo": { $exists: true },
+    },
+  }
+);
 
-// This is a virtual field that concatenates firstName and lastName to provide a full name.
-// It is not stored in the database but can be accessed like a regular field.
+// Virtual field for full name
 userSchema.virtual("fullName").get(function () {
   return `${this.firstName} ${this.lastName}`.trim();
 });

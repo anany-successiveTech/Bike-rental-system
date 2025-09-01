@@ -1,10 +1,8 @@
-# Bike-rental-system
-
 # Bike Rental System - Project Overview
 
 ## Introduction
 
-The Bike Rental System is a modern web-based application that facilitates bicycle rentals for users. The system is designed with a client-server architecture to provide a seamless experience for both customers and administrators.
+The Bike Rental System is a modern web-based application that facilitates motorcycle rentals for users. The system is designed with a client-server architecture to provide a seamless experience for both customers and administrators.
 
 ## System Architecture
 

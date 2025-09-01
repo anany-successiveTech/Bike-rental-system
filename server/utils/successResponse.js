@@ -1,6 +1,7 @@
 // Utility functions for sending standardized success and error responses
 // Success Response
 export const successResponse = (res, message, data = {}, statusCode = 200) => {
+
   return res.status(statusCode).json({
     success: true,
     message,

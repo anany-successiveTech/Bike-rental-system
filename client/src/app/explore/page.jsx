@@ -1,5 +1,4 @@
 "use client";
-
 import React, { useState } from "react";
 import BikeCard from "@/components/general/BikeCrad";
 import bikes from "@/sampleData/data";
@@ -13,17 +12,18 @@ import {
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import Combobox from "@/components/ui/comboBox";
+import { Label } from "@/components/ui/label"; // Added ShadCN Label
 
 const Modal = ({ isOpen, onClose, children }) => {
   if (!isOpen) return null;
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50">
-      <div className="bg-gray-900 text-white p-6 rounded-2xl w-11/12 max-w-md shadow-lg">
+    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/80">
+      <div className="bg-background border p-6 rounded-lg w-11/12 max-w-md shadow-lg">
         <button
-          className="text-white mb-4 hover:text-red-500"
+          className="text-muted-foreground hover:text-foreground mb-4 transition-colors"
           onClick={onClose}
         >
-          Close
+          ✕ Close
         </button>
         {children}
       </div>
@@ -36,18 +36,16 @@ const ExplorePage = () => {
 
   const filterContent = (
     <div className="space-y-6">
-      <h2 className="text-lg font-bold text-white">Filters</h2>
+      <h2 className="text-lg font-semibold">Filters</h2>
 
       {/* Price Sorting */}
       <div className="space-y-2">
-        <label className="block text-sm font-medium text-white">
-          Price Sorting
-        </label>
+        <Label className="text-sm font-medium">Price Sorting</Label>
         <Select>
-          <SelectTrigger className="w-full bg-gray-800 text-white border-gray-700">
+          <SelectTrigger className="w-full">
             <SelectValue placeholder="Select Price Order" />
           </SelectTrigger>
-          <SelectContent className="bg-gray-800 text-white border-gray-700">
+          <SelectContent>
             <SelectItem value="high-to-low">High to Low</SelectItem>
             <SelectItem value="low-to-high">Low to High</SelectItem>
           </SelectContent>
@@ -56,54 +54,58 @@ const ExplorePage = () => {
 
       {/* Company Name */}
       <div className="space-y-2">
-        <label className="block text-sm font-medium text-white">
-          Company Name
-        </label>
+        <Label className="text-sm font-medium">Company</Label>
         <Select>
-          <SelectTrigger className="w-full bg-gray-800 text-white border-gray-700">
+          <SelectTrigger className="w-full">
             <SelectValue placeholder="Select Company" />
           </SelectTrigger>
-          <SelectContent className="bg-gray-800 text-white border-gray-700">
+          <SelectContent>
             <SelectItem value="yamaha">Yamaha</SelectItem>
             <SelectItem value="honda">Honda</SelectItem>
             <SelectItem value="suzuki">Suzuki</SelectItem>
             <SelectItem value="hero">Hero</SelectItem>
+            <SelectItem value="ktm">KTM</SelectItem>
+            <SelectItem value="tv">TVS</SelectItem>
+            <SelectItem value="ktm">Kawasaki</SelectItem>
+            <SelectItem value="ktm">Royal Enfield</SelectItem>
           </SelectContent>
         </Select>
       </div>
 
       {/* Combobox */}
-      <div>
-        <Combobox className="bg-gray-800 text-white border border-gray-700" />
+      <div className="space-y-2">
+        <Label className="text-sm font-medium">Search Models</Label>
+        <Combobox />
       </div>
 
       {/* Apply Filters Button */}
-      <Button className="w-full mt-2 bg-blue-600 hover:bg-blue-700 text-white">
-        Apply Filters
-      </Button>
+      <Button className="w-full">Apply Filters</Button>
     </div>
   );
 
   return (
-    <div className="p-4">
+    <div className="container mx-auto p-4">
       {/* Mobile: Filter Button */}
       <div className="lg:hidden mb-4">
         <Button
+          variant="outline"
           className="w-full"
           onClick={() => setIsModalOpen(true)}
         >
-          Filters
+          Show Filters
         </Button>
       </div>
 
       <div className="flex flex-col lg:flex-row gap-6 items-start">
         {/* Left: Filter Section (desktop only) */}
-        <div className="hidden lg:block w-1/5 bg-gray-900 p-4 rounded-2xl shadow-md border border-gray-700">
-          {filterContent}
+        <div className="hidden lg:block w-1/5 min-w-[250px]">
+          <div className="bg-card border rounded-lg p-4 shadow-sm sticky top-4">
+            {filterContent}
+          </div>
         </div>
 
         {/* Right: Bike Cards */}
-        <div className="w-full lg:w-4/5 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-y-6 gap-x-2">
+        <div className="w-full lg:w-4/5 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
           {bikes.map((bike) => (
             <BikeCard key={bike.id} bike={bike} />
           ))}

@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useContext } from "react";
-import { Menu, X, Bike } from "lucide-react";
+import { Menu, X, Bike, User } from "lucide-react";
 import Link from "next/link";
 import { Button } from "../ui/button";
 import LoginModal from "@/components/general/loginModal";
@@ -9,12 +9,22 @@ import ContactModal from "@/components/general/contactModal";
 import { ModeToggle } from "../global/themeButton";
 import { FavoritesContext } from "@/context/favoriteCount";
 import { useRouter } from "next/navigation";
+import Combobox from "../ui/comboBox";
+
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
 
 const links = [
   { name: "Home", href: "/" },
   { name: "Blogs", href: "/blogs" },
   { name: "Support", href: "/support" },
-  { name: "Contact" }, // no href, only a navbar action
+  { name: "Contact" },
   { name: "Partner", href: "/partner" },
   { name: "Explore", href: "/explore" },
 ];
@@ -23,8 +33,18 @@ const Navbar = () => {
   const [isOpen, setIsOpen] = useState(false);
   const [loginOpen, setLoginOpen] = useState(false);
   const [contactOpen, setContactOpen] = useState(false);
+
   const { favoriteCount } = useContext(FavoritesContext);
   const router = useRouter();
+
+  // ---- fake auth state (replace with your real auth system) ----
+  const [isAuthenticated, setIsAuthenticated] = useState(false);
+
+  const handleLogout = () => {
+    setIsAuthenticated(false);
+    // clear tokens / session here
+    router.push("/");
+  };
 
   return (
     <nav className="bg-white dark:bg-black shadow-lg fixed top-0 left-0 right-0 z-50 border-b border-gray-200 dark:border-gray-800 transition-all duration-300">
@@ -46,7 +66,7 @@ const Navbar = () => {
             </div>
             <Link href="/" className="text-2xl font-bold">
               <span className="bg-gradient-to-r from-blue-600 via-purple-600 to-blue-800 dark:from-blue-400 dark:via-purple-400 dark:to-blue-600 text-transparent bg-clip-text">
-                Bikers
+                Motorcycle
               </span>
             </Link>
           </div>
@@ -76,6 +96,7 @@ const Navbar = () => {
         </div>
 
         {/* Right Actions */}
+        {/* Right Actions */}
         <div className="flex items-center space-x-4">
           <div className="hidden md:block">
             <ModeToggle />
@@ -90,30 +111,42 @@ const Navbar = () => {
           </Button>
 
           <div className="hidden md:flex items-center space-x-3">
-            <Button
-              variant="google"
-              onClick={() => setLoginOpen(true)}
-              className="font-medium border"
-            >
-              Login
-            </Button>
-            <Button variant="google" asChild className="font-medium border">
-              <Link href="/signup">Sign Up</Link>
-            </Button>
-          </div>
-
-          {/* Mobile Menu Toggle */}
-          <div className="md:hidden">
-            <button
-              onClick={() => setIsOpen(!isOpen)}
-              className="p-2 rounded-lg text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors duration-200"
-            >
-              {isOpen ? (
-                <X className="w-6 h-6" />
-              ) : (
-                <Menu className="w-6 h-6" />
-              )}
-            </button>
+            {isAuthenticated ? (
+              <DropdownMenu>
+                <DropdownMenuTrigger asChild>
+                  <Avatar className="cursor-pointer">
+                    <AvatarImage src="/user-avatar.jpg" alt="User" />
+                    <AvatarFallback>
+                      <User className="w-5 h-5" />
+                    </AvatarFallback>
+                  </Avatar>
+                </DropdownMenuTrigger>
+                <DropdownMenuContent align="end" className="w-40">
+                  <DropdownMenuItem onClick={() => router.push("/profile")}>
+                    Profile
+                  </DropdownMenuItem>
+                  <DropdownMenuItem onClick={() => router.push("/settings")}>
+                    Settings
+                  </DropdownMenuItem>
+                  <DropdownMenuItem onClick={handleLogout}>
+                    Logout
+                  </DropdownMenuItem>
+                </DropdownMenuContent>
+              </DropdownMenu>
+            ) : (
+              <>
+                <Button
+                  variant="google"
+                  onClick={() => setLoginOpen(true)}
+                  className="font-medium border"
+                >
+                  Login
+                </Button>
+                <Button variant="google" asChild className="font-medium border">
+                  <Link href="/signup">Sign Up</Link>
+                </Button>
+              </>
+            )}
           </div>
         </div>
       </div>
@@ -160,23 +193,47 @@ const Navbar = () => {
 
           {/* Actions + Theme Toggle */}
           <div className="flex items-center justify-between py-4 px-6 border-t border-gray-200 dark:border-gray-800">
-            <div className="flex space-x-3">
-              <Button
-                variant="googleBlue"
-                onClick={() => {
-                  setLoginOpen(true);
-                  setIsOpen(false);
-                }}
-                className="font-medium"
-              >
-                Login
-              </Button>
-              <Button variant="googleBlue" asChild className="font-medium">
-                <Link href="/signup" onClick={() => setIsOpen(false)}>
-                  Sign Up
-                </Link>
-              </Button>
-            </div>
+            {isAuthenticated ? (
+              <DropdownMenu>
+                <DropdownMenuTrigger asChild>
+                  <Avatar className="cursor-pointer">
+                    <AvatarImage src="/user-avatar.jpg" alt="User" />
+                    <AvatarFallback>
+                      <User className="w-5 h-5" />
+                    </AvatarFallback>
+                  </Avatar>
+                </DropdownMenuTrigger>
+                <DropdownMenuContent align="end" className="w-40">
+                  <DropdownMenuItem onClick={() => router.push("/profile")}>
+                    Profile
+                  </DropdownMenuItem>
+                  <DropdownMenuItem onClick={() => router.push("/settings")}>
+                    Settings
+                  </DropdownMenuItem>
+                  <DropdownMenuItem onClick={handleLogout}>
+                    Logout
+                  </DropdownMenuItem>
+                </DropdownMenuContent>
+              </DropdownMenu>
+            ) : (
+              <div className="flex space-x-3">
+                <Button
+                  variant="googleBlue"
+                  onClick={() => {
+                    setLoginOpen(true);
+                    setIsOpen(false);
+                  }}
+                  className="font-medium"
+                >
+                  Login
+                </Button>
+                <Button variant="googleBlue" asChild className="font-medium">
+                  <Link href="/signup" onClick={() => setIsOpen(false)}>
+                    Sign Up
+                  </Link>
+                </Button>
+              </div>
+            )}
             <ModeToggle />
           </div>
         </div>

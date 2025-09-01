@@ -1,6 +1,5 @@
 "use client";
 import { useState, useEffect } from "react";
-import axios from "axios";
 import {
   Dialog,
   DialogContent,
@@ -12,7 +11,9 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { toast } from "sonner";
 import { useRouter } from "next/navigation";
+import apiInstantce from "@/lib/axios";
 import { Loader2, Mail, Lock } from "lucide-react";
+import axios from "axios";
 
 export default function LoginModal({ open, onOpenChange, onLoginSuccess }) {
   const [email, setEmail] = useState("");
@@ -48,12 +49,16 @@ export default function LoginModal({ open, onOpenChange, onLoginSuccess }) {
     setIsLoading(true);
 
     try {
-      const response = await axios.post("/api/auth/login", { email, password });
+      const response = await apiInstantce.post("auth/login", {
+        email,
+        password,
+      });
       const data = response.data;
+      console.log(response, "data");
 
       toast.success("Login successful!");
-      localStorage.setItem("token", data.user.token);
-      localStorage.setItem("user", JSON.stringify(data.user));
+      localStorage.setItem("token", data.data.user.token);
+      localStorage.setItem("user", JSON.stringify(data.data.user));
 
       onLoginSuccess?.(data.user);
       onOpenChange(false);
@@ -63,6 +68,7 @@ export default function LoginModal({ open, onOpenChange, onLoginSuccess }) {
       if (error.response) {
         toast.error(error.response.data.message || "Login failed");
       } else {
+        console.error("Login Error:", error);
         toast.error("Network error. Please try again.");
       }
     } finally {
